@@ -1,0 +1,66 @@
+#!/usr/local/bin/python
+# This script displays the number of MOV files in the OOI CamHD raw data archive and the
+# approximate total file size of these MOV files. It works by downloading all of the
+# index pages across the archive.
+#
+# Timothy Crone (tjcrone@gmail.com)
+
+# imports
+import sys, itertools, requests
+from datetime import timedelta, date
+
+# disable certificate warning
+requests.packages.urllib3.disable_warnings()
+
+# date function
+def daterange(start_date, end_date):
+  for n in range(int ((end_date - start_date).days)):
+    yield start_date + timedelta(n)
+
+# define date range
+start_date = date(2015, 7, 9)
+end_date = date.today()
+
+# display some info
+sys.stdout.write("Tabulating data from %s to %s " % (start_date.strftime("%-d %b %Y"),
+  end_date.strftime("%-d %b %Y")))
+
+# initialize spinner
+spinner = itertools.cycle(['-', '\\', '|', '/'])
+spinnern = 0
+
+# initialize totals
+MB = 0
+GB = 0
+N = 0
+
+# loop through date range and collect stats
+for single_date in daterange(start_date, end_date + timedelta(days=2)):
+  # download index file
+  indexfile = ("https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301" + 
+    single_date.strftime("/%Y/%m/%d/"))
+  res = requests.get(indexfile, verify=False)
+  # parse index file
+  for line in res.text.encode('utf-8').strip().splitlines():
+    if 'mov' in line:
+      filesize = line.strip().rsplit(' ', 1)[-1]
+      if 'M' in filesize:
+        mb = filesize.split('M')[0]
+        MB = MB + float(mb)
+        N = N + 1
+      elif 'G' in filesize:
+        gb = filesize.split('G')[0]
+        GB = GB + float(gb)
+        N = N + 1
+  # spin spinner
+  spinnern += 1
+  if (spinnern == 4):
+    sys.stdout.write(spinner.next())
+    sys.stdout.flush()
+    sys.stdout.write('\b') 
+    spinnern = 0
+
+# display results
+sys.stdout.write("\b  \n\n") 
+sys.stdout.write("Number of MOV files: %i\n" % N)
+sys.stdout.write("Total file size: %.2f TB\n" % ((GB + MB/1024)/1024))
