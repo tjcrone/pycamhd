@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 # This script displays the number of MOV files in the OOI CamHD raw data archive and the
 # approximate total file size of these MOV files. It works by downloading all of the
 # index pages across the archive.
