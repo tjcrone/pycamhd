@@ -4,6 +4,36 @@
 # Timothy Crone (tjcrone@gmail.com)
 
 # imports
-import sys, os, time, argparse
+import sys, os, time, argparse, subprocess, struct
 
+# get integer from file byte range function
+def get_integer(filename, byte_range):
+  cmd = ('curl --header "Range: bytes=%i-%i" -k -s ' % 
+    (byte_range[0], byte_range[1])) + filename
+  p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+  str_value = p.communicate()[0]
+  if len(str_value) == 4:
+    return struct.unpack('>I', str_value)[0]
+  elif len(str_value) == 8:
+    return struct.unpack('>Q', str_value)[0]
 
+# file to test
+filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
+
+# get the ftyp atom size
+byte_range = [0, 3]
+ftyp_size = get_integer(filename, byte_range)
+print ftyp_size 
+
+# get the mdat atom size
+byte_range = [ftyp_size, ftyp_size + 3]
+mdat_size = get_integer(filename, byte_range)
+if mdat_size == 1:
+  byte_range = [ftyp_size + 8, ftyp_size + 15]
+  mdat_size = get_integer(filename, byte_range)
+print mdat_size
+
+# get the moov atom size
+byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
+moov_size = get_integer(filename, byte_range)
+print moov_size
