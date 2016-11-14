@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# This program parses a CamHD MOV file and downloads a single frame.
+# This program parses a CamHD MOV file and downloads a single frame from the
+# raw data archive.
 #
 # Timothy Crone (tjcrone@gmail.com)
 
