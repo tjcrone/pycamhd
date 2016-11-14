@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+# This script takes a directory as an argument and generates a text file
+# with hashes for each frame in the directory.
+#
+# Timothy Crone (tjcrone@gmail.com)
+
+# imports
+import sys, os, imagehash
+from PIL import Image
+
+# parse inputs
+framedir = sys.argv[1]
+
+# loop through frames in framedir
+d = []
+for fn in os.listdir(framedir): 
+  hash = imagehash.whash(Image.open(framedir + fn))
+  dechash = int(str(hash), 16)
+  print dechash
