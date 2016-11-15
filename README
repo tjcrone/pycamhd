@@ -11,5 +11,8 @@ Example usage:
 Options:
   Coming soon.
 
+To clone this repository:
+  hg clone https://bitbucket.org/tjcrone/camhd
+
 Author:
   Timothy Crone (tjcrone@gmail.com)
