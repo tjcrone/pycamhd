@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-# This script parses a CamHD MOV file and downloads a single frame from the
-# raw data archive.
+# This script remotely parses CamHD files in the raw data archive. Eventually
+# it will be able to download a single frame or range of frames from a file in
+# the archive without downloading the entire video file. This script is under
+# heavy development and will change early and often in the coming days.
 #
 # Timothy Crone (tjcrone@gmail.com)
 
