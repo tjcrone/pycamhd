@@ -1,15 +1,13 @@
 #!/usr/bin/env python
-# This script remotely parses CamHD files in the raw data archive. Eventually
-# it will be able to download a single frame or range of frames from a file in
-# the archive without downloading the entire video file. This script is under
-# heavy development and will change early and often in the coming days.
+# This is a module for working with the remote CamHD Quicktime files in the
+# raw data archive. It can be used to obtain information about these files
+# or individual frames without downloading them in their entirety.
 #
 # Timothy Crone (tjcrone@gmail.com)
 
 # imports
-import sys
-
-#, os, time, argparse, subprocess, struct
+import subprocess, struct
+#sys, os, time, argparse
 
 # get arbitrary bytes from remote file
 def get_bytes(filename, byte_range):
@@ -26,25 +24,27 @@ def get_integer(filename, byte_range):
     return struct.unpack('>I', file_bytes)[0]
   elif len(file_bytes) ==8:
     return struct.unpack('>Q', file_bytes)[0]
+  # check and warn or error if not an integer
 
 # get the ftyp atom size
 def get_ftyp_size(filename):
   byte_range = [0, 3]
-  return get_size(filename, byte_range)
+  return get_integer(filename, byte_range)
+  # check and warn or error if not 24
 
 # get the mdat atom size
 def get_mdat_size(filename, ftyp_size):
   byte_range = [ftyp_size, ftyp_size + 3]
-  mdat_size = get_size(filename, byte_range)
+  mdat_size = get_integer(filename, byte_range)
   if mdat_size == 1:
     byte_range = [ftyp_size + 8, ftyp_size + 15]
-    mdat_size = get_size(filename, byte_range)
+    mdat_size = get_integer(filename, byte_range)
   return mdat_size
 
 # get the moov atom size
-def get_moov_size(filename, ftpy_size, mdat_size):
+def get_moov_size(filename, ftyp_size, mdat_size):
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
-  return get_size(filename, byte_range)
+  return get_integer(filename, byte_range)
 
 # return string of hex zeros
 def hex_zeros(count):
@@ -86,15 +86,40 @@ def build_header():
     [b'\x4c\x49\x53\x54\x14\x1c\x09\x00\x6d\x6f\x76\x69\x30\x30\x64\x63\x00\x1c\x09\x00'])
   return avi_header
 
+def get_moov_atom(filename):
+  # get top-level atom sizes
+  ftyp_size = get_ftyp_size(filename)
+  mdat_size = get_mdat_size(filename, ftyp_size)
+  moov_size = get_moov_size(filename, ftyp_size, mdat_size)
+
+  # download the moov atom
+  byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
+  return get_bytes(filename, byte_range)
+
+#get_frame_sizes
+
+#get_frame_count
+
+#get_frame (output format options)
+
+
 # main function to run when called directly
 def main():
-
 
   # file to test
   filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
-  ftyp_size = get_ftyp_size(filename)
-  print ftyp_size
+  # get top-level atom sizes
+  #ftyp_size = get_ftyp_size(filename)
+  #mdat_size = get_mdat_size(filename, ftyp_size)
+  #moov_size = get_moov_size(filename, ftyp_size, mdat_size)
+
+
+  #frame_sizes = get_frame_sizes(filename)
+
+  moov_atom = get_moov_atom(filename)
+
+  sys.stdout.write(moov_atom)
 
 
 # main sentinel
@@ -102,15 +127,6 @@ if __name__ == "__main__":
   main()
 
 
-
-
-
-# download the moov atom
-#byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
-#moov_atom = get_bytes(filename, byte_range)
-#sys.stdout.write(moov_atom)
-
-# parse the moov atam
 
 #print struct.unpack('>I', moov_atom[0:4])[0]
 
