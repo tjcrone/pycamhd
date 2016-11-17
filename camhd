@@ -26,46 +26,43 @@ def get_integer(filename, byte_range):
     return struct.unpack('>Q', file_bytes)[0]
   # check and warn or error if not an integer
 
-# get the ftyp atom size
-def get_ftyp_size(filename):
+# get the top-level atom sizes
+def get_atom_sizes(filename):
   byte_range = [0, 3]
-  return get_integer(filename, byte_range)
-  # check and warn or error if not 24
-
-# get the mdat atom size
-def get_mdat_size(filename, ftyp_size):
+  ftyp_size = get_integer(filename, byte_range)
+  # check and warn or error if ftyp_size not 24
   byte_range = [ftyp_size, ftyp_size + 3]
   mdat_size = get_integer(filename, byte_range)
   if mdat_size == 1:
     byte_range = [ftyp_size + 8, ftyp_size + 15]
     mdat_size = get_integer(filename, byte_range)
-  return mdat_size
-
-# get the moov atom size
-def get_moov_size(filename, ftyp_size, mdat_size):
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
-  return get_integer(filename, byte_range)
+  moov_size = get_integer(filename, byte_range)
+  return ftyp_size, mdat_size, moov_size
 
 # get the moov atom
 def get_moov_atom(filename):
-  ftyp_size = get_ftyp_size(filename)
-  mdat_size = get_mdat_size(filename, ftyp_size)
-  moov_size = get_moov_size(filename, ftyp_size, mdat_size)
+  (ftyp_size, mdat_size, moov_size) = get_atom_sizes(filename)
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
   return get_bytes(filename, byte_range)
   # check moov atom sanity
 
+# get frame count
+def get_frame_count(filename, moov_atom):
+  # get the moov_atom if not provided (internally, only download moov atom once)
+  if not provided, moov_atom = get_moov_atom(filename)
+
+
 # get frame sizes from moov atom
-def get_frame_sizes(filename):
+#def get_frame_sizes(filename):
 
 
+# get frame_positions(filename):
 
 
+#get_frame_sizes
 
-
-
-
-
+#get_frame_count
 
 
 
@@ -109,13 +106,10 @@ def build_header():
     [b'\x4c\x49\x53\x54\x14\x1c\x09\x00\x6d\x6f\x76\x69\x30\x30\x64\x63\x00\x1c\x09\x00'])
   return avi_header
 
-#get_frame_sizes
-
-#get_frame_count
-
 #get_frame (filename, frame number,  output format option)
 
 #get_fram_range?
+
 
 # main function to run when called directly
 def main():
@@ -123,11 +117,12 @@ def main():
   # file to test
   filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
+  # check moov atom
   #moov_atom = get_moov_atom(filename)
   #sys.stdout.write(moov_atom)
 
-  frame_sizes = get_frame_sizes(filename)
 
+  #frame_sizes = get_frame_sizes(filename)
 
 # main sentinel
 if __name__ == "__main__":
