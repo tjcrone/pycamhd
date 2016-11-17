@@ -6,8 +6,8 @@
 # Timothy Crone (tjcrone@gmail.com)
 
 # imports
-import subprocess, struct
-#sys, os, time, argparse
+import subprocess, struct, sys
+#os, time, argparse
 
 # get arbitrary bytes from remote file
 def get_bytes(filename, byte_range):
@@ -45,6 +45,29 @@ def get_mdat_size(filename, ftyp_size):
 def get_moov_size(filename, ftyp_size, mdat_size):
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
   return get_integer(filename, byte_range)
+
+# get the moov atom
+def get_moov_atom(filename):
+  ftyp_size = get_ftyp_size(filename)
+  mdat_size = get_mdat_size(filename, ftyp_size)
+  moov_size = get_moov_size(filename, ftyp_size, mdat_size)
+  byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
+  return get_bytes(filename, byte_range)
+  # check moov atom sanity
+
+# get frame sizes from moov atom
+def get_frame_sizes(filename):
+
+
+
+
+
+
+
+
+
+
+
 
 # return string of hex zeros
 def hex_zeros(count):
@@ -86,22 +109,13 @@ def build_header():
     [b'\x4c\x49\x53\x54\x14\x1c\x09\x00\x6d\x6f\x76\x69\x30\x30\x64\x63\x00\x1c\x09\x00'])
   return avi_header
 
-def get_moov_atom(filename):
-  # get top-level atom sizes
-  ftyp_size = get_ftyp_size(filename)
-  mdat_size = get_mdat_size(filename, ftyp_size)
-  moov_size = get_moov_size(filename, ftyp_size, mdat_size)
-
-  # download the moov atom
-  byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
-  return get_bytes(filename, byte_range)
-
 #get_frame_sizes
 
 #get_frame_count
 
-#get_frame (output format options)
+#get_frame (filename, frame number,  output format option)
 
+#get_fram_range?
 
 # main function to run when called directly
 def main():
@@ -109,32 +123,22 @@ def main():
   # file to test
   filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
-  # get top-level atom sizes
-  #ftyp_size = get_ftyp_size(filename)
-  #mdat_size = get_mdat_size(filename, ftyp_size)
-  #moov_size = get_moov_size(filename, ftyp_size, mdat_size)
+  #moov_atom = get_moov_atom(filename)
+  #sys.stdout.write(moov_atom)
 
-
-  #frame_sizes = get_frame_sizes(filename)
-
-  moov_atom = get_moov_atom(filename)
-
-  sys.stdout.write(moov_atom)
+  frame_sizes = get_frame_sizes(filename)
 
 
 # main sentinel
 if __name__ == "__main__":
   main()
 
-
-
+# scratch
 #print struct.unpack('>I', moov_atom[0:4])[0]
 
 #print struct.unpack('>I', moov_atom[8:12])[0]
 
 #print(str(ftyp_size) + ' ' + str(mdat_size) + ' ' + str(moov_atom.find('stsz')))
-
-#quit()
 
 # for now assume that we have a frame position and size obtained from the moov atom
 #frame_position = [6094104432]
@@ -146,7 +150,6 @@ if __name__ == "__main__":
 
 # attach an avi header
 # this header is a total kluge. it should be rewritten based on the avi spec.
-
 
 #avi_file = avi_header + frame_data
 #sys.stdout.write(avi_file)
