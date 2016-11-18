@@ -7,7 +7,7 @@
 
 # imports
 import subprocess, struct, sys
-import numpy as np
+#import numpy as np
 
 # get arbitrary bytes from remote file
 def get_bytes(filename, byte_range):
@@ -58,7 +58,7 @@ def get_moov_atom(filename):
 def get_frame_count(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
-  stsz_pos = moov_atom.find('stsz')
+  stsz_pos = moov_atom.find('stsz') # searching for this ascii code is NOT GOOD
   return struct.unpack('>I', moov_atom[stsz_pos+12:stsz_pos+16])[0]
 
 # get frame sizes
@@ -66,23 +66,30 @@ def get_frame_sizes(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   frame_count = get_frame_count(filename, moov_atom)
-  stsz_pos = moov_atom.find('stsz')
+  stsz_pos = moov_atom.find('stsz') # searching for this ascii code is NOT GOOD
   frame_sizes = []
   for i in range(stsz_pos+16, stsz_pos+16+4*frame_count, 4):
     frame_sizes.append(struct.unpack('>I', moov_atom[i:i+4])[0])
   return frame_sizes
 
 # get chunk offsets
-
-
-
-# get frame positions
-def get_frame_positions(filename, moov_atom=False):
+def get_chunk_offsets(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
-  frame_sizes = get_frame_sizes(filename, moov_atom)
-  return np.cumsum(frame_sizes)-frame_sizes[0] + 512
+  frame_count = get_frame_count(filename, moov_atom)
+  co64_pos = moov_atom.find('co64') # searching for this ascii code is NOT GOOD
+  chunk_offsets = []
+  for i in range(co64_pos+16, co64_pos+16+8*frame_count, 8):
+    print i
+    chunk_offsets.append(struct.unpack('>Q', moov_atom[i:i+8])[0])
+  return chunk_offsets
 
+# get frame positions
+#def get_frame_positions(filename, moov_atom=False):
+#  if not moov_atom:
+#    moov_atom = get_moov_atom(filename)
+#  frame_sizes = get_frame_sizes(filename, moov_atom)
+#  return np.cumsum(frame_sizes)-frame_sizes[0] + 512
 
 # return string of hex zeros
 def hex_zeros(count):
@@ -124,12 +131,16 @@ def build_header():
     [b'\x4c\x49\x53\x54\x14\x1c\x09\x00\x6d\x6f\x76\x69\x30\x30\x64\x63\x00\x1c\x09\x00'])
   return avi_header
 
-#get_frame (filename, frame number,  output format option)
+# get single frame from file
+#def get_frame (filename, frame number,  output format option)
 
+# get frame range from file
+# def get_frame_range():
 #get_fram_range?
 
 # main function to run when called directly
 def main():
+  # mostly testing stuff in here for now
 
   # file to test
   filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
@@ -144,9 +155,14 @@ def main():
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
 
-  frame_positions = get_frame_positions(filename)
-  for i in frame_positions:
+  #frame_positions = get_frame_positions(filename)
+  #for i in frame_positions:
+  #  sys.stdout.write('%i\n' % i)
+
+  chunk_offsets = get_chunk_offsets(filename)
+  for i in chunk_offsets:
     sys.stdout.write('%i\n' % i)
+
 
   #print frame_count
 
