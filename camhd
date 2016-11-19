@@ -7,7 +7,6 @@
 
 # imports
 import subprocess, struct, sys
-#import numpy as np
 
 # get arbitrary bytes from remote file
 def get_bytes(filename, byte_range):
@@ -39,9 +38,9 @@ def get_atom_sizes(filename):
     byte_range = [ftyp_size + 8, ftyp_size + 15]
     mdat_size = get_integer(filename, byte_range)
   # error if first 'icpf' frame is not in the expected posiiton
-  first_icpf = get_bytes(filename, [516, 519])
-  if first_icpf != 'icpf':
-    raise ValueError('mdat atom does not have the expected structure')
+  #first_icpf = get_bytes(filename, [516, 519])
+  #if first_icpf != 'icpf':
+  #  raise ValueError('mdat atom does not have the expected structure')
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
   moov_size = get_integer(filename, byte_range)
   return ftyp_size, mdat_size, moov_size
@@ -58,7 +57,7 @@ def get_moov_atom(filename):
 def get_frame_count(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
-  stsz_pos = moov_atom.find('stsz') # searching for this ascii code is NOT IDEAL
+  stsz_pos = moov_atom.find('stsz') # searching for the ascii code is NOT IDEAL
   return struct.unpack('>I', moov_atom[stsz_pos+12:stsz_pos+16])[0]
 
 # get frame sizes
@@ -66,7 +65,7 @@ def get_frame_sizes(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   frame_count = get_frame_count(filename, moov_atom)
-  stsz_pos = moov_atom.find('stsz') # searching for this ascii code is NOT IDEAL
+  stsz_pos = moov_atom.find('stsz') # searching for the ascii code is NOT IDEAL
   frame_sizes = []
   for i in range(stsz_pos+16, stsz_pos+16+4*frame_count, 4):
     frame_sizes.append(struct.unpack('>I', moov_atom[i:i+4])[0])
@@ -76,7 +75,7 @@ def get_frame_sizes(filename, moov_atom=False):
 def get_chunk_count(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
-  co64_pos = moov_atom.find('co64') # searching for this ascii code is NOT IDEAL
+  co64_pos = moov_atom.find('co64') # searching for the ascii code is NOT IDEAL
   return struct.unpack('>I', moov_atom[co64_pos+8:co64_pos+12])[0]
 
 # get chunk offsets
@@ -84,7 +83,7 @@ def get_chunk_offsets(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   chunk_count = get_chunk_count(filename, moov_atom)
-  co64_pos = moov_atom.find('co64') # searching for this ascii code is NOT IDEAL
+  co64_pos = moov_atom.find('co64') # searching for the ascii code is NOT IDEAL
   chunk_offsets = []
   for i in range(co64_pos+12, co64_pos+12+8*chunk_count, 8):
     chunk_offsets.append(struct.unpack('>Q', moov_atom[i:i+8])[0])
@@ -106,48 +105,71 @@ def get_frame_positions(filename, moov_atom=False):
     j = j+1
   return frame_positions[0:len(frame_sizes)]
 
-# return string of hex zeros
+# return string of binary zeros with length of count bytes
 def hex_zeros(count):
-  zeros = []
+  zeros = ''
   for i in range(0, count):
-    zeros.append(b'\x00')
+    zeros = zeros + '\x00'
   return zeros
 
-# build simple avi header
-def build_header():
-  avi_header = ''.join([b'\x52\x49\x46\x46\xaa\x32\x09\x00\x41\x56\x49\x20\x4c\x49\x53\x54',
-    b'\x38\x12\x00\x00\x68\x64\x72\x6c\x61\x76\x69\x68\x38\x00\x00\x00',
-    b'\x2b\x41\x00\x00\xc3\x3d\x09\x01\x00\x00\x00\x00\x10\x09\x00\x00',
-      b'\x02\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x10\x00',
-    b'\x80\x07\x00\x00\x38\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    b'\x00\x00\x00\x00\x00\x00\x00\x00\x4c\x49\x53\x54\xe0\x10\x00\x00',
-    b'\x73\x74\x72\x6c\x73\x74\x72\x68\x38\x00\x00\x00\x76\x69\x64\x73',
-    b'\x61\x70\x63\x6e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    b'\xe9\x03\x00\x00\x60\xea\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00',
-    b'\x00\x1c\x09\x00\xff\xff\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00',
-    b'\x80\x07\x38\x04\x73\x74\x72\x66\x28\x00\x00\x00\x28\x00\x00\x00',
-    b'\x80\x07\x00\x00\x38\x04\x00\x00\x01\x00\x18\x00\x61\x70\x63\x6e',
-    b'\x00\xec\x5e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    b'\x00\x00\x00\x00\x4a\x55\x4e\x4b\x18\x10\x00\x00\x04\x00\x00\x00',
-    b'\x00\x00\x00\x00\x30\x30\x64\x63\x00\x00\x00\x00\x00\x00\x00\x00'] + \
+# build an avi file out of frame_data
+def get_avi_file(frame_data):
+  avi_file = 'RIFF' + struct.pack('I', len(frame_data) + 5754) + 'AVI LIST' + \
+    '\x38\x12\x00\x00\x68\x64\x72\x6c\x61\x76\x69\x68\x38\x00\x00\x00' + \
+    '\x2b\x41\x00\x00\xc3\x3d\x09\x01\x00\x00\x00\x00\x10\x09\x00\x00' + \
+    '\x02\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x10\x00' + \
+    '\x80\x07\x00\x00\x38\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
+    '\x00\x00\x00\x00\x00\x00\x00\x00\x4c\x49\x53\x54\xe0\x10\x00\x00' + \
+    '\x73\x74\x72\x6c\x73\x74\x72\x68\x38\x00\x00\x00\x76\x69\x64\x73' + \
+    '\x61\x70\x63\x6e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
+    '\xe9\x03\x00\x00\x60\xea\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00' + \
+    struct.pack('I', len(frame_data)) + '\xff\xff\xff\xff' + hex_zeros(8) + \
+    '\x80\x07\x38\x04\x73\x74\x72\x66\x28\x00\x00\x00\x28\x00\x00\x00' + \
+    '\x80\x07\x00\x00\x38\x04\x00\x00\x01\x00\x18\x00\x61\x70\x63\x6e' + \
+    '\x00\xec\x5e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
+    '\x00\x00\x00\x00\x4a\x55\x4e\x4b\x18\x10\x00\x00\x04\x00\x00\x00' + \
+    '\x00\x00\x00\x00\x30\x30\x64\x63\x00\x00\x00\x00\x00\x00\x00\x00' + \
     hex_zeros(4096) + \
-    [b'\x00\x00\x00\x00\x76\x70\x72\x70\x44\x00\x00\x00\x00\x00\x00\x00',
-    b'\x00\x00\x00\x00\x3c\x00\x00\x00\x80\x07\x00\x00\x38\x04\x00\x00',
-    b'\x09\x00\x10\x00\x80\x07\x00\x00\x38\x04\x00\x00\x01\x00\x00\x00',
-    b'\x38\x04\x00\x00\x80\x07\x00\x00\x38\x04\x00\x00\x80\x07\x00\x00',
-    b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    b'\x4a\x55\x4e\x4b\x04\x01\x00\x00\x6f\x64\x6d\x6c\x64\x6d\x6c\x68\xf8'] + \
-    hex_zeros(239) + \
-    [b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x4c\x49\x53\x54',
-    b'\x1a\x00\x00\x00\x49\x4e\x46\x4f\x49\x53\x46\x54\x0e\x00\x00\x00',
-    b'\x4c\x61\x76\x66\x35\x37\x2e\x31\x39\x2e\x31\x30\x30\x00\x4a\x55',
-    b'\x4e\x4b\xf8\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'] + \
+    '\x00\x00\x00\x00\x76\x70\x72\x70\x44\x00\x00\x00\x00\x00\x00\x00' + \
+    '\x00\x00\x00\x00\x3c\x00\x00\x00\x80\x07\x00\x00\x38\x04\x00\x00' + \
+    '\x09\x00\x10\x00\x80\x07\x00\x00\x38\x04\x00\x00\x01\x00\x00\x00' + \
+    '\x38\x04\x00\x00\x80\x07\x00\x00\x38\x04\x00\x00\x80\x07\x00\x00' + \
+    '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
+    '\x4a\x55\x4e\x4b\x04\x01\x00\x00\x6f\x64\x6d\x6c\x64\x6d\x6c\x68' + \
+    '\xf8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
+    hex_zeros(224) + \
+    '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x4c\x49\x53\x54' + \
+    '\x1a\x00\x00\x00\x49\x4e\x46\x4f\x49\x53\x46\x54\x0e\x00\x00\x00' + \
+    '\x4c\x61\x76\x66\x35\x37\x2e\x35\x36\x2e\x31\x30\x30\x00\x4a\x55' + \
+    '\x4e\x4b\xf8\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
     hex_zeros(1006) + \
-    [b'\x4c\x49\x53\x54\x14\x1c\x09\x00\x6d\x6f\x76\x69\x30\x30\x64\x63\x00\x1c\x09\x00'])
-  return avi_header
+    'LIST' + struct.pack('I', len(frame_data) + 12) + 'movi' + \
+    '\x30\x30\x64\x63' + struct.pack('I', len(frame_data)) + frame_data
+  return avi_file
 
-# get single frame from file
-#def get_frame (filename, frame number,  output format option)
+# get frame data
+def get_frame_data(filename, frame_number, moov_atom=False):
+  if not moov_atom:
+    moov_atom = get_moov_atom(filename)
+  frame_sizes = get_frame_sizes(filename, moov_atom)
+  frame_positions = get_frame_positions(filename, moov_atom)
+  byte_range = [frame_positions[frame_number - 1], frame_positions[frame_number - 1] +
+    frame_sizes[frame_number - 1] - 1]
+  frame_data = get_bytes(filename, byte_range)
+  return frame_data
+
+# write frame to file
+#def write_frame(filename, frame_number, file_type):
+
+#outfilename = 
+
+  # write this avi to a temporary file
+  #outputfile = ('test_frame_%i_camhd.avi' % frame_number)
+  #f = open(outputfile, 'w')
+  #f.write(avi_file)
+  #f.close()
+  #quit()
+# write frame to file
 
 # get frame range from file
 # def get_frame_range():
@@ -160,61 +182,78 @@ def main():
   # file to test
   filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
-  # check moov atom
-  #moov_atom = get_moov_atom(filename)
-  #sys.stdout.write(moov_atom)
+  # get moov atom
+  moov_atom = get_moov_atom(filename)
 
-  #frame_count = get_frame_count(filename)
-  #print frame_count
-
-  #chunk_count = get_chunk_count(filename)
-  #print chunk_count
-
-  #frame_sizes = get_frame_sizes(filename)
+  # get frame sizes
+  frame_sizes = get_frame_sizes(filename, moov_atom)
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
 
-  frame_positions = get_frame_positions(filename)
-  for i in frame_positions:
-    sys.stdout.write('%i\n' % i)
-
-  #chunk_offsets = get_chunk_offsets(filename)
-  #for i in chunk_offsets:
+  # get frame positions
+  #frame_positions = get_frame_positions(filename, moov_atom)
+  #for i in frame_positions:
   #  sys.stdout.write('%i\n' % i)
 
-  #print frame_count
+  #sys.stdout.write(frame_data)
 
-  #frame_sizes = get_frame_sizes(filename)
-  #return 0
+  #print len(frame_data)
+
+  #avi_file = get_avi_header() + frame_data
+
+  #frame_number = 600
+  #frame_number = int(sys.argv[1])
+  #frame_data = get_frame_data(filename, frame_number, moov_atom)
+  #avi_file = get_avi_file(frame_data)
+  #sys.stdout.write(avi_file)
+
+  # write this avi to a temporary file
+  #outputfile = ('test_frame_%i_camhd.avi' % frame_number)
+  #f = open(outputfile, 'w')
+  #f.write(avi_file)
+  #f.close()
+  #quit()
+
+  #for frame_number in range(487,498):
+  for frame_number in range(1,len(frame_sizes)+1):
+    print frame_number
+    frame_data = get_frame_data(filename, frame_number, moov_atom)
+    #print frame_sizes[frame_number-1]
+    #print len(frame_data)
+    avi_file = get_avi_file(frame_data)
+    outputfile = ('test_frame_%05.0f_camhd.avi' % frame_number)
+    f = open(outputfile, 'w')
+    f.write(avi_file)
+    f.close
+
+  #for frame_number in range(487,498):
+  #  print frame_number
+  #  frame_data = get_frame_data(filename, frame_number, moov_atom)
+  #  f = open('tmp.avi', 'w')
+  #  avi_file = get_avi_file(frame_data)
+  #  f.write(avi_file)
+  #  f.close
+
+  #  outputfile = ('tmp_%i.png' % frame_number)
+  #  ff = FFmpeg(inputs = {'tmp.avi': None}, outputs = {outputfile: None})
+  #  ff.run()
+
+
+    #cmd = ('ffmpeg -y -v error -i tmp.avi -f framemd5 tmp.md5')
+    #p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+
+    #cmd = ('tail -n 1 tmp.md5 >> allmd5')
+    #p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+
+    #framemd5 = p.communicate()[0]
+    #print framemd5
+  #return file_bytes
+
+  # convert to yuv rawvideo 
+  #  cmd = ('curl --header "Range: bytes=%i-%i" -k -s ' % 
+  #    (byte_range[0], byte_range[1])) + filename
+  #  p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
 
 # main sentinel
 if __name__ == "__main__":
   main()
-
-# scratch
-# for now assume that we have a frame position and size obtained from the moov atom
-#frame_position = [6094104432]
-#frame_size = [596992]
-
-# download the frame data
-#byte_range = [frame_position[0], frame_position[0]+frame_size[0]-1]
-#frame_data = get_frame_data(filename, byte_range)
-
-# attach an avi header
-# this header is a total kluge. it should be rewritten based on the avi spec.
-
-#avi_file = avi_header + frame_data
-#sys.stdout.write(avi_file)
-
-# write this avi to a temporary file
-#f = open('tmpavifile.avi', 'w')
-#f.write(avi_file)
-#f.close()
-
-# convert to yuv rawvideo 
-#  cmd = ('curl --header "Range: bytes=%i-%i" -k -s ' % 
-#    (byte_range[0], byte_range[1])) + filename
-#  p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-
-# parse command line argument
-#filename = sys.argv[1]
