@@ -14,5 +14,8 @@ Options:
 To clone this repository:
   hg clone https://bitbucket.org/tjcrone/camhd
 
+To do:
+  test with every file in archive
+
 Author:
   Timothy Crone (tjcrone@gmail.com)
