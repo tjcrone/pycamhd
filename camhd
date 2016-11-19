@@ -49,7 +49,7 @@ def get_atom_sizes(filename):
 def get_moov_atom(filename):
   (ftyp_size, mdat_size, moov_size) = get_atom_sizes(filename)
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
-  #print "getting moov_atom" # print this for testing
+  print "getting moov_atom" # print this for testing
   return get_bytes(filename, byte_range)
   # error if insane moov atom
 
@@ -105,14 +105,14 @@ def get_frame_positions(filename, moov_atom=False):
     j = j+1
   return frame_positions[0:len(frame_sizes)]
 
-# return string of binary zeros with length of count bytes
+# return string of 'count' binary zeros
 def hex_zeros(count):
   zeros = ''
   for i in range(0, count):
     zeros = zeros + '\x00'
   return zeros
 
-# build an avi file out of frame_data
+# build a single-frame avi file using frame_data
 def get_avi_file(frame_data):
   avi_file = 'RIFF' + struct.pack('I', len(frame_data) + 5754) + 'AVI LIST' + \
     '\x38\x12\x00\x00\x68\x64\x72\x6c\x61\x76\x69\x68\x38\x00\x00\x00' + \
@@ -159,17 +159,14 @@ def get_frame_data(filename, frame_number, moov_atom=False):
   return frame_data
 
 # write frame to file
-#def write_frame(filename, frame_number, file_type):
-
-#outfilename = 
-
-  # write this avi to a temporary file
-  #outputfile = ('test_frame_%i_camhd.avi' % frame_number)
-  #f = open(outputfile, 'w')
-  #f.write(avi_file)
-  #f.close()
-  #quit()
-# write frame to file
+def write_frame(filename, frame_number, file_type='AVI'):
+  if file_type=='AVI':
+    frame_data = get_frame_data(filename, frame_number)
+    avi_file = get_avi_file(frame_data)
+    outputfile = ('%s_%06.0f.avi' % (filename.split('/')[-1].split('.')[0], frame_number))
+    f = open(outputfile, 'w')
+    f.write(avi_file)
+    f.close()
 
 # get frame range from file
 # def get_frame_range():
@@ -182,11 +179,15 @@ def main():
   # file to test
   filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
+  # test avi writer
+  frame_number = int(sys.argv[1])
+  write_frame(filename, frame_number)
+
   # get moov atom
-  moov_atom = get_moov_atom(filename)
+  #moov_atom = get_moov_atom(filename)
 
   # get frame sizes
-  frame_sizes = get_frame_sizes(filename, moov_atom)
+  #frame_sizes = get_frame_sizes(filename, moov_atom)
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
 
@@ -215,16 +216,16 @@ def main():
   #quit()
 
   #for frame_number in range(487,498):
-  for frame_number in range(1,len(frame_sizes)+1):
-    print frame_number
-    frame_data = get_frame_data(filename, frame_number, moov_atom)
+  #for frame_number in range(1,len(frame_sizes)+1):
+  #  print frame_number
+  #  frame_data = get_frame_data(filename, frame_number, moov_atom)
     #print frame_sizes[frame_number-1]
     #print len(frame_data)
-    avi_file = get_avi_file(frame_data)
-    outputfile = ('test_frame_%05.0f_camhd.avi' % frame_number)
-    f = open(outputfile, 'w')
-    f.write(avi_file)
-    f.close
+  #  avi_file = get_avi_file(frame_data)
+  #  outputfile = ('test_frame_%05.0f_camhd.avi' % frame_number)
+  #  f = open(outputfile, 'w')
+  #  f.write(avi_file)
+  #  f.close
 
   #for frame_number in range(487,498):
   #  print frame_number
@@ -237,7 +238,6 @@ def main():
   #  outputfile = ('tmp_%i.png' % frame_number)
   #  ff = FFmpeg(inputs = {'tmp.avi': None}, outputs = {outputfile: None})
   #  ff.run()
-
 
     #cmd = ('ffmpeg -y -v error -i tmp.avi -f framemd5 tmp.md5')
     #p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
