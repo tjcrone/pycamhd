@@ -220,7 +220,7 @@ def get_stats():
 
 # main function to run when called directly
 def main():
-
+  pass
   # file to test
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/07/09/CAMHDA301-20150709T121400Z.mov'
