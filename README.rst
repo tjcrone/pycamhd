@@ -1,4 +1,3 @@
-=======
 CAMHD
 =======
 
@@ -7,11 +6,18 @@ the OOI CamHD seafloor camera system. This repository is under heavy development
 so scripts are changing fast and often. Usage information will be provided when
 the repository scripts have stablized.
 
+Example usage
+-------------
+
 Example usage:
   Coming soon.
 
 Options:
   Coming soon.
+
+Installation
+------------
+  $ hg clone https://bitbucket.org/tjcrone/camhd
 
 To clone this repository:
   hg clone https://bitbucket.org/tjcrone/camhd
