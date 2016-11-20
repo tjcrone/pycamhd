@@ -10,10 +10,13 @@ Installation
 ------------
 
 To clone this repository:
+
 .. code-block:: bash
   $ hg clone https://bitbucket.org/tjcrone/camhd
 
 To install using pip:
+
+.. code-block:: bash
   $ pip install https://bitbucket.org/tjcrone/camhd/get/tip.tar.gz
 
 Example usage
@@ -21,11 +24,10 @@ Example usage
 
 Coming soon.
 
-To do:
-  test with every file in archive
-
 License
 -------
 
-Author:
-  Timothy Crone (tjcrone@gmail.com)
+Author
+------
+
+Timothy Crone (tjcrone@gmail.com)
