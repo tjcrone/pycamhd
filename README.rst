@@ -29,6 +29,7 @@ Example usage
 .. code-block:: python
 
   >>> import camhd
+  >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
 License
 -------
