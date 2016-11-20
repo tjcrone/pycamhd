@@ -1,4 +1,4 @@
-CAMHD
+**CAMHD**
 =======
 
 This repository contains a set of Python scripts for interacting with data from
