@@ -11,18 +11,10 @@ how this module works is subject to change.
 Installation
 ------------
 
-1) clone this repository:
-
 .. code-block:: bash
 
   $ hg clone https://bitbucket.org/tjcrone/camhd
-
-2) install module using pip:
-
-.. code-block:: bash
-
-  $ cd camhd/dist
-  $ pip install camhd-0.1.tar.gz
+  $ pip install camhd/dist/camhd-0.1.tar.gz
 
 Example usage
 -------------
