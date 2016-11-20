@@ -14,6 +14,9 @@ Options:
 To clone this repository:
   hg clone https://bitbucket.org/tjcrone/camhd
 
+To install using pip:
+  pip install https://bitbucket.org/tjcrone/camhd/get/tip.tar.gz
+
 To do:
   test with every file in archive
 
