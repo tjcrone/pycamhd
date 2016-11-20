@@ -1,4 +1,4 @@
 syntax: glob
 *.pyc
-/dist/*
-/*.egg-info
+dist/*
+camhd.egg-info/*
