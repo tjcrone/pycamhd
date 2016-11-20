@@ -33,5 +33,8 @@ To install using pip:
 To do:
   test with every file in archive
 
+License
+-------
+
 Author:
   Timothy Crone (tjcrone@gmail.com)
