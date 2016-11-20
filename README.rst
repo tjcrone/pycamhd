@@ -31,7 +31,7 @@ Coming soon.
 License
 -------
 
-Coming soon.
+MIT License Copyright (c) 2016 Timothy Crone
 
 Author
 ------
