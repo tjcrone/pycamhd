@@ -28,7 +28,7 @@ Example usage
 
 .. code-block:: python
 
->>> 1+1
+  >>> import camhd
 
 License
 -------
