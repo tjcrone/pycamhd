@@ -1,5 +1,5 @@
-**CAMHD**
-=======
+CAMHD
+=====
 
 This repository contains a Python module for interacting with data from the
 OOI CamHD seafloor camera system. Code here is currently under heavy development,
