@@ -12,11 +12,13 @@ Installation
 To clone this repository:
 
 .. code-block:: bash
+
   $ hg clone https://bitbucket.org/tjcrone/camhd
 
 To install using pip:
 
 .. code-block:: bash
+
   $ pip install https://bitbucket.org/tjcrone/camhd/get/tip.tar.gz
 
 Example usage
