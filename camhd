@@ -7,10 +7,10 @@
 
 # imports
 import subprocess, struct, sys, requests
-
 from datetime import date, timedelta
 
 # get arbitrary bytes from remote file
+# change this to use pycurl?
 def get_bytes(filename, byte_range):
   cmd = ('curl --header "Range: bytes=%i-%i" -k -s ' % 
     (byte_range[0], byte_range[1])) + filename
@@ -18,7 +18,7 @@ def get_bytes(filename, byte_range):
   file_bytes = p.communicate()[0]
   return file_bytes
 
-# get big-endian integer from remote file
+# get big-endian 32-bit or 64-bit integer from remote file
 def get_integer(filename, byte_range):
   file_bytes = get_bytes(filename, byte_range)
   if len(file_bytes) == 4:
@@ -107,13 +107,6 @@ def get_frame_positions(filename, moov_atom=False):
     j = j+1
   return frame_positions[0:len(frame_sizes)]
 
-# return string of 'count' binary zeros
-def hex_zeros(count):
-  zeros = ''
-  for i in range(0, count):
-    zeros = zeros + '\x00'
-  return zeros
-
 # build a single-frame avi file using frame_data
 def get_avi_file(frame_data):
   avi_file = 'RIFF' + struct.pack('I', len(frame_data) + 5754) + 'AVI LIST' + \
@@ -125,13 +118,13 @@ def get_avi_file(frame_data):
     '\x73\x74\x72\x6c\x73\x74\x72\x68\x38\x00\x00\x00\x76\x69\x64\x73' + \
     '\x61\x70\x63\x6e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
     '\xe9\x03\x00\x00\x60\xea\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00' + \
-    struct.pack('I', len(frame_data)) + '\xff\xff\xff\xff' + hex_zeros(8) + \
+    struct.pack('I', len(frame_data)) + '\xff\xff\xff\xff' + '\x00'*8  + \
     '\x80\x07\x38\x04\x73\x74\x72\x66\x28\x00\x00\x00\x28\x00\x00\x00' + \
     '\x80\x07\x00\x00\x38\x04\x00\x00\x01\x00\x18\x00\x61\x70\x63\x6e' + \
     '\x00\xec\x5e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
     '\x00\x00\x00\x00\x4a\x55\x4e\x4b\x18\x10\x00\x00\x04\x00\x00\x00' + \
     '\x00\x00\x00\x00\x30\x30\x64\x63\x00\x00\x00\x00\x00\x00\x00\x00' + \
-    hex_zeros(4096) + \
+    '\x00'*4096 + \
     '\x00\x00\x00\x00\x76\x70\x72\x70\x44\x00\x00\x00\x00\x00\x00\x00' + \
     '\x00\x00\x00\x00\x3c\x00\x00\x00\x80\x07\x00\x00\x38\x04\x00\x00' + \
     '\x09\x00\x10\x00\x80\x07\x00\x00\x38\x04\x00\x00\x01\x00\x00\x00' + \
@@ -139,12 +132,12 @@ def get_avi_file(frame_data):
     '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
     '\x4a\x55\x4e\x4b\x04\x01\x00\x00\x6f\x64\x6d\x6c\x64\x6d\x6c\x68' + \
     '\xf8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
-    hex_zeros(224) + \
+    '\x00'*224 + \
     '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x4c\x49\x53\x54' + \
     '\x1a\x00\x00\x00\x49\x4e\x46\x4f\x49\x53\x46\x54\x0e\x00\x00\x00' + \
     '\x4c\x61\x76\x66\x35\x37\x2e\x35\x36\x2e\x31\x30\x30\x00\x4a\x55' + \
     '\x4e\x4b\xf8\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' + \
-    hex_zeros(1006) + \
+    '\x00'*1006 + \
     'LIST' + struct.pack('I', len(frame_data) + 12) + 'movi' + \
     '\x30\x30\x64\x63' + struct.pack('I', len(frame_data)) + frame_data
   return avi_file
@@ -195,33 +188,31 @@ def get_file_list():
         #print file_list[-1]
   return file_list
 
-# get frame *range* from file (future function)
+# get frame range from file (future function)
 
 # main function to run when called directly
 def main():
-  # mostly testing stuff in here for now
 
   # file to test
-  #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
+  filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
-  # test get_file_list
-  file_list = get_file_list()
-
+  # get_file_list test
+  #file_list = get_file_list()
   #print len(file_list)
 
-  for file_name in file_list:
-    print file_name
-    try:
-      (ftyp_size, mdat_size, moov_size) = get_atom_sizes(file_name)
-      print ftyp_size
-      print mdat_size
-      print moov_size
-    except:
-      print "no good"
+  #for file_name in file_list:
+  #  print file_name
+  #  try:
+  #    (ftyp_size, mdat_size, moov_size) = get_atom_sizes(file_name)
+  #    print ftyp_size
+  #    print mdat_size
+  #    print moov_size
+  #  except:
+  #    print "no good"
 
   # test avi writer
-  #frame_number = int(sys.argv[1])
-  #write_frame(filename, frame_number)
+  frame_number = int(sys.argv[1])
+  write_frame(filename, frame_number)
 
   # get moov atom
   #moov_atom = get_moov_atom(filename)
