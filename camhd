@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-# This is a module for working with the remote CamHD Quicktime files in the
-# raw data archive. It can be used to obtain information about these files
-# or obtain individual frames without downloading the entire video files.
+# This is a Python module for interacting with data from the OOI CamHD
+# seafloor camera system stored in the raw data archive. It can be used to
+# obtain information about these files or obtain individual frames without
+# downloading entire video files.
 #
 # Timothy Crone (tjcrone@gmail.com)
 
