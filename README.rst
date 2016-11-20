@@ -19,10 +19,13 @@ Options:
 
 Installation
 ------------
-  $ hg clone https://bitbucket.org/tjcrone/camhd
 
 To clone this repository:
-  hg clone https://bitbucket.org/tjcrone/camhd
+
+.. code-block:: bash
+
+  $ hg clone https://bitbucket.org/tjcrone/camhd
+
 
 To install using pip:
   pip install https://bitbucket.org/tjcrone/camhd/get/tip.tar.gz
