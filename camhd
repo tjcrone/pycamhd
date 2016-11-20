@@ -6,7 +6,9 @@
 # Timothy Crone (tjcrone@gmail.com)
 
 # imports
-import subprocess, struct, sys
+import subprocess, struct, sys, requests
+
+from datetime import date, timedelta
 
 # get arbitrary bytes from remote file
 def get_bytes(filename, byte_range):
@@ -168,20 +170,58 @@ def write_frame(filename, frame_number, file_type='AVI'):
     f.write(avi_file)
     f.close()
 
-# get frame range from file
-# def get_frame_range():
-#get_fram_range?
+# get date range
+def get_date_range(start_date, end_date):
+  for i in range(int ((end_date - start_date).days)):
+    yield start_date + timedelta(i)
+
+# get file list
+def get_file_list():
+  # disable certificate warning
+  requests.packages.urllib3.disable_warnings()
+  # define date range
+  start_date = date(2015, 7, 9)
+  end_date = date.today()
+  # build file list
+  file_list = []
+  for single_date in get_date_range(start_date, end_date + timedelta(days=2)):
+    indexfile = ("https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301" +
+      single_date.strftime("/%Y/%m/%d/"))
+    res = requests.get(indexfile, verify=False)
+    for line in res.text.encode('utf-8').strip().splitlines():
+      if 'mov' in line:
+        file_list.append(("https://rawdata.oceanobservatories.org/files/RS03ASHS/" +
+        "PN03B/06-CAMHDA301" + single_date.strftime("/%Y/%m/%d/")) + line.split('\"')[5])
+        #print file_list[-1]
+  return file_list
+
+# get frame *range* from file (future function)
 
 # main function to run when called directly
 def main():
   # mostly testing stuff in here for now
 
   # file to test
-  filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
+  #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
+
+  # test get_file_list
+  file_list = get_file_list()
+
+  #print len(file_list)
+
+  for file_name in file_list:
+    print file_name
+    try:
+      (ftyp_size, mdat_size, moov_size) = get_atom_sizes(file_name)
+      print ftyp_size
+      print mdat_size
+      print moov_size
+    except:
+      print "no good"
 
   # test avi writer
-  frame_number = int(sys.argv[1])
-  write_frame(filename, frame_number)
+  #frame_number = int(sys.argv[1])
+  #write_frame(filename, frame_number)
 
   # get moov atom
   #moov_atom = get_moov_atom(filename)
