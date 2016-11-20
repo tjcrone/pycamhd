@@ -48,6 +48,7 @@ def get_atom_sizes(filename):
   return ftyp_size, mdat_size, moov_size
 
 # get the moov atom
+# moov atom is returned as a string containing packed binary data
 def get_moov_atom(filename):
   (ftyp_size, mdat_size, moov_size) = get_atom_sizes(filename)
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
@@ -164,7 +165,7 @@ def write_frame(filename, frame_number, file_type='AVI'):
     f.close()
 
 # get date range
-def get_date_range(start_date, end_date):
+def _get_date_range(start_date, end_date):
   for i in range(int ((end_date - start_date).days)):
     yield start_date + timedelta(i)
 
@@ -177,7 +178,7 @@ def get_file_list():
   end_date = date.today()
   # build file list
   file_list = []
-  for single_date in get_date_range(start_date, end_date + timedelta(days=2)):
+  for single_date in _get_date_range(start_date, end_date + timedelta(days=2)):
     indexfile = ("https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301" +
       single_date.strftime("/%Y/%m/%d/"))
     res = requests.get(indexfile, verify=False)
@@ -211,11 +212,12 @@ def main():
   #    print "no good"
 
   # test avi writer
-  frame_number = int(sys.argv[1])
-  write_frame(filename, frame_number)
+  #frame_number = int(sys.argv[1])
+  #write_frame(filename, frame_number)
 
   # get moov atom
-  #moov_atom = get_moov_atom(filename)
+  moov_atom = get_moov_atom(filename)
+  print type(moov_atom)
 
   # get frame sizes
   #frame_sizes = get_frame_sizes(filename, moov_atom)
