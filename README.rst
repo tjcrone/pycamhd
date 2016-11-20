@@ -1,13 +1,15 @@
 **CAMHD**
 =======
 
-This repository contains a set of Python scripts for interacting with data from
-the OOI CamHD seafloor camera system. This repository is under heavy development,
-so scripts are changing fast and often. Usage information will be provided when
-the repository scripts have stablized.
+This repository contains a Python module for interacting with data from the
+OOI CamHD seafloor camera system. Code here is currently under heavy development,
+so the module is changing fast and often. Usage information will be provided when
+the codes stablize.
 
 Example usage
 -------------
+
+Coming soon.
 
 Example usage:
   Coming soon.
