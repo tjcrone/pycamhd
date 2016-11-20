@@ -4,7 +4,7 @@ CAMHD
 This repository contains a Python module for interacting with data from the
 OOI CamHD seafloor camera system. Code here is currently under heavy development,
 so the module is changing fast and often. Usage information will be provided when
-the codes stablize.
+the code stablizes.
 
 Installation
 ------------
@@ -15,7 +15,7 @@ To clone this repository:
 
   $ hg clone https://bitbucket.org/tjcrone/camhd
 
-To install using pip:
+To install using pip (not yet working):
 
 .. code-block:: bash
 
@@ -28,6 +28,8 @@ Coming soon.
 
 License
 -------
+
+Coming soon.
 
 Author
 ------
