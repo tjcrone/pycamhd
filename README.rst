@@ -14,7 +14,7 @@ Installation
 .. code-block:: bash
 
   $ hg clone https://bitbucket.org/tjcrone/camhd
-  $ pip install camhd/dist/camhd-0.1.tar.gz
+  $ pip install camhd/dist/camhd-0.2.tar.gz
 
 Example usage
 -------------
