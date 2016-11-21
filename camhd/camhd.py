@@ -102,8 +102,11 @@ def get_frame_offsets(filename, moov_atom=False):
   for chunk_pos in chunk_offsets:
     frame_offsets.append(chunk_pos)
     for i in range(0,5):
-      frame_offsets.append(frame_offsets[-1] + frame_sizes[j])
-      j = j+1
+      try:
+        frame_offsets.append(frame_offsets[-1] + frame_sizes[j])
+        j = j+1
+      except:
+        break
     j = j+1
   return frame_offsets[0:len(frame_sizes)]
 
@@ -216,6 +219,7 @@ def main():
   # file to test
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/07/09/CAMHDA301-20150709T121400Z.mov'
+  #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/11/25/CAMHDA301-20151125T150000Z.mov'
 
   # test avi writer
   #frame_number = int(sys.argv[1])
@@ -235,7 +239,7 @@ def main():
   #print frame_count
 
   # get frame sizes
-  #frame_sizes = get_frame_sizes(filename, moov_atom)
+  #frame_sizes = get_frame_offsets(filename, moov_atom)
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
 
