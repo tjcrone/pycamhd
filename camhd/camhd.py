@@ -93,21 +93,21 @@ def get_chunk_offsets(filename, moov_atom=False):
     chunk_offsets.append(struct.unpack('>Q', moov_atom[i:i+8])[0])
   return chunk_offsets
 
-# get frame positions
-def get_frame_positions(filename, moov_atom=False):
+# get frame offsets
+def get_frame_offsets(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   frame_sizes = get_frame_sizes(filename, moov_atom)
   chunk_offsets = get_chunk_offsets(filename, moov_atom)
   j = 0
-  frame_positions = []
+  frame_offsets = []
   for chunk_pos in chunk_offsets:
-    frame_positions.append(chunk_pos)
+    frame_offsets.append(chunk_pos)
     for i in range(0,5):
-      frame_positions.append(frame_positions[-1] + frame_sizes[j])
+      frame_offsets.append(frame_offsets[-1] + frame_sizes[j])
       j = j+1
     j = j+1
-  return frame_positions[0:len(frame_sizes)]
+  return frame_offsets[0:len(frame_sizes)]
 
 # build a single-frame avi file using frame_data
 def get_avi_file(frame_data):
@@ -149,8 +149,8 @@ def get_frame_data(filename, frame_number, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   frame_sizes = get_frame_sizes(filename, moov_atom)
-  frame_positions = get_frame_positions(filename, moov_atom)
-  byte_range = [frame_positions[frame_number - 1], frame_positions[frame_number - 1] +
+  frame_offsets = get_frame_offsets(filename, moov_atom)
+  byte_range = [frame_offsets[frame_number - 1], frame_offsets[frame_number - 1] +
     frame_sizes[frame_number - 1] - 1]
   frame_data = get_bytes(filename, byte_range)
   return frame_data
@@ -285,9 +285,9 @@ def main():
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
 
-  # get frame positions
-  #frame_positions = get_frame_positions(filename, moov_atom)
-  #for i in frame_positions:
+  # get frame offsets
+  #frame_offsets = get_frame_offsets(filename, moov_atom)
+  #for i in frame_offsets:
   #  sys.stdout.write('%i\n' % i)
 
   #sys.stdout.write(frame_data)
