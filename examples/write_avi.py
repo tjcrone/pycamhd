@@ -12,4 +12,4 @@ filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHD
 
 # write single frame to avi file
 frame_number = 4976
-write_frame(filename, frame_number)
+camhd.write_frame(filename, frame_number)
