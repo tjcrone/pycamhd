@@ -147,9 +147,13 @@ def get_avi_file(frame_data):
 
 # get frame data
 def get_frame_data(filename, frame_number, moov_atom=False):
+  if frame_number < 0:
+    raise ValueError('frame_number must be a positive integer')
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   frame_sizes = get_frame_sizes(filename, moov_atom)
+  if frame_number > len(frame_sizes):
+    raise ValueError('frame_number exceeds number of frames in file')
   frame_offsets = get_frame_offsets(filename, moov_atom)
   byte_range = [frame_offsets[frame_number - 1], frame_offsets[frame_number - 1] +
     frame_sizes[frame_number - 1] - 1]
@@ -220,6 +224,7 @@ def main():
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/07/09/CAMHDA301-20150709T121400Z.mov'
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/11/25/CAMHDA301-20151125T150000Z.mov'
+  #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/20/CAMHDA301-20161120T180000Z.camhd_prores_001744.mov' # new file
 
   # test avi writer
   #frame_number = int(sys.argv[1])
@@ -229,6 +234,12 @@ def main():
 
   #print total_size
   #print file_count
+
+  # get atom positions
+  #(ftyp_size, mdat_size, moov_size) = get_atom_sizes(filename)
+  #print ftyp_size
+  #print mdat_size
+  #print moov_size
   
   # get moov atom
   #moov_atom = get_moov_atom(filename)
@@ -243,7 +254,7 @@ def main():
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
 
-  #byte_range = [0, 48]
+  #byte_range = [0, 9600]
   #file_bytes = get_bytes(filename, byte_range)
   #sys.stdout.write(file_bytes)
 
