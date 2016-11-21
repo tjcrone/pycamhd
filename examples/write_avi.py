@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# Here we use the camhd module to write a single-frame AVI file, only
-# downloading data from the moov atom and one frame. This AVI file can
-# easily be converted to a PNG or losslessly to a raw YUV using ffmpeg.
+# This script uses the camhd module to write a single-frame AVI file, only
+# downloading data from the moov atom and one frame. This AVI file can be
+# converted to a PNG or losslessly to a raw YUV using ffmpeg.
 #
 # Timothy Crone (tjcrone@gmail.com)
 
