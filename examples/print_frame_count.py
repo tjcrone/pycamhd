@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Here we use the camhd module to print the number of frames in a remote
+# This script uses the camhd module to print the number of frames in a remote
 # video file.
 #
 # Timothy Crone (tjcrone@gmail.com)
