@@ -9,16 +9,11 @@ import camhd
 file_list = camhd.get_file_list()
 
 # loop through file list and write out frame 4200
-j = 0
 for filename in file_list:
   print filename
-  j = j + 1
   try:
     camhd.write_frame(filename, 4200)
-  #  write_frame(filename, 4200)
-  #  j = j+1
+    print "success"
   except:
     print "error"
     pass
-  if j == 200:
-    break
