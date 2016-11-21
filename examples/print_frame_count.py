@@ -4,14 +4,14 @@
 #
 # Timothy Crone (tjcrone@gmail.com)
 
-import camhd
+import sys, camhd
 
-# file to work with
+# remote file
 filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
 
-# download moov_atom
+# download moov_atom from remote file
 moov_atom = camhd.get_moov_atom(filename)
 
-# get frame count
+# print number of frames in remote file
 frame_count = camhd.get_frame_count(filename, moov_atom)
-print "Frame count: " + str(frame_count)
+sys.stdout.write("Frame count: %i\n" % frame_count)
