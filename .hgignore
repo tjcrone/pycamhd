@@ -3,3 +3,4 @@ syntax: glob
 camhd.egg-info/*
 .DS_Store
 NOTES
+*.avi
