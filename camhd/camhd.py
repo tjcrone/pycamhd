@@ -10,6 +10,10 @@
 import subprocess, struct, sys, requests
 from datetime import date, timedelta
 
+# version function
+def version():
+  sys.stdout.write('camhd version 0.2dev\n')
+
 # get arbitrary bytes from remote file
 # change this to use pycurl?
 def get_bytes(filename, byte_range):
@@ -26,7 +30,6 @@ def get_integer(filename, byte_range):
     return struct.unpack('>I', file_bytes)[0]
   elif len(file_bytes) ==8:
     return struct.unpack('>Q', file_bytes)[0]
-  # error if not integer
 
 # get the top-level atom sizes
 def get_atom_sizes(filename):
@@ -40,10 +43,6 @@ def get_atom_sizes(filename):
   if mdat_size == 1:
     byte_range = [ftyp_size + 8, ftyp_size + 15]
     mdat_size = get_integer(filename, byte_range)
-  # error if first 'icpf' frame is not in the expected posiiton
-  #first_icpf = get_bytes(filename, [516, 519])
-  #if first_icpf != 'icpf':
-  #  raise ValueError('mdat atom does not have the expected structure')
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
   moov_size = get_integer(filename, byte_range)
   return ftyp_size, mdat_size, moov_size
@@ -55,7 +54,6 @@ def get_moov_atom(filename):
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
   #print "getting moov_atom" # print this for testing
   return get_bytes(filename, byte_range)
-  # error if insane moov atom
 
 # get frame count
 def get_frame_count(filename, moov_atom=False):
@@ -172,12 +170,9 @@ def _get_date_range(start_date, end_date):
 
 # get file list
 def get_file_list():
-  # disable certificate warning
   requests.packages.urllib3.disable_warnings()
-  # define date range
   start_date = date(2015, 7, 9)
   end_date = date.today()
-  # build file list
   file_list = []
   for single_date in _get_date_range(start_date, end_date + timedelta(days=2)):
     indexfile = ("https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301" +
@@ -189,16 +184,13 @@ def get_file_list():
         "PN03B/06-CAMHDA301" + single_date.strftime("/%Y/%m/%d/")) + line.split('\"')[5])
   return file_list
 
+# get raw data archive stats
 def get_stats():
-  # disable certificate warning
   requests.packages.urllib3.disable_warnings()
-  # define date range
   start_date = date(2015, 7, 9)
   end_date = date.today()
-  # initialize totals
   total_size = 0
   file_count = 0
-  # loop through date range and collect stats
   for single_date in _get_date_range(start_date, end_date + timedelta(days=2)):
     indexfile = ("https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301" +
       single_date.strftime("/%Y/%m/%d/"))
@@ -218,7 +210,7 @@ def get_stats():
 
 # get frame range from file (future function)
 
-# main function to run when called directly
+# main function to run when called directly, used mostly for testing
 def main():
   pass
   # file to test
@@ -234,8 +226,6 @@ def main():
   #print total_size
   #print file_count
   
-  #quit()
-
   # get moov atom
   #moov_atom = get_moov_atom(filename)
   #print len(moov_atom)
@@ -244,14 +234,10 @@ def main():
   #frame_count = get_frame_count(filename, moov_atom)
   #print frame_count
 
-  #quit()
-
   # get frame sizes
   #frame_sizes = get_frame_sizes(filename, moov_atom)
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
-
-  #quit()
 
   #byte_range = [0, 48]
   #file_bytes = get_bytes(filename, byte_range)
