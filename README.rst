@@ -5,9 +5,13 @@ This repository contains a Python module for interacting with data from the OOI
 CamHD seafloor camera system stored in the raw data archive. It can be used to
 obtain information about these files or obtain individual frames without
 downloading entire video files. The code here is currently under heavy
-development, so the module is changing fast and often. A class-paradigm is likely
-to be develoed, so a lot about the way this module works may be change in coming
-months.
+development, so the module is changing fast and often. I am considering moving
+the code to a class-paradigm, so a lot may change in the coming months, so
+please take that into consideration when developing code based on this module.
+
+I am actively recruiting anyone interested in the CamHD data to participate in
+the development of this code. Join up and contribute if you have time. Pull
+requests greatly appreciated!
 
 Installation
 ------------
