@@ -22,11 +22,9 @@ Installation
   $ pip install camhd/dist/camhd-0.3.tar.gz
 
 Usage
--------------
+-----
 
-Write a frame to a single-frame AVI file:
-
-.. code-block:: python
+Write a frame to a single-frame AVI file::
 
 >>> import camhd
 >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
@@ -35,26 +33,24 @@ Write a frame to a single-frame AVI file:
 >>> print(frame_count)
 >>> frame_number = 4976
 >>> camhd.write_frame(filename, frame_number, moov_atom)
-
-Test::
-
->>> import camhd
->>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
->>> moov_atom = camhd.get_moov_atom(filename)
->>> frame_count = camhd.get_frame_count(filename, moov_atom)
->>> print(frame_count)
->>> frame_number = 4976
->>> camhd.write_frame(filename, frame_number, moov_atom)
-
-.. note::
-
-  The ``eol`` parameter for :meth:`readline` is no longer supported when
-  pySerial is run with newer Python versions (V2.6+) where the module
-  :mod:`io` is available.
 
 *Note: Obtaining the moov_atom first and passing it to any function is optional, but
 it can greatly speed up subsequent calls to these functions. When multiple frames
 are to be obtained from the same file, getting the moov_atom first is recommended.*
+
+Get information about the repository::
+
+>>> (total_size, file_count) = camhd.get_stats()
+>>> print(total_size)
+>>> print(file_count)
+>>> file_list = camhd.get_file_list()
+>>> for filename in file_list:
+...   print filename
+
+*Note: Getting information about the repository can take a while, depending on
+server response times, because every index file must be downloaded*
+
+
 
 
 
