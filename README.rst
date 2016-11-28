@@ -21,15 +21,24 @@ Installation
   $ hg clone https://bitbucket.org/tjcrone/camhd
   $ pip install camhd/dist/camhd-0.3.tar.gz
 
-Example usage
+Usage
 -------------
+
+Write a frame to a single-frame AVI file:
 
 .. code-block:: python
 
   >>> import camhd
   >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
+  >>> moov_atom = camhd.get_moov_atom(filename)
+  >>> frame_count = camhd.get_frame_count(filename, moov_atom)
+  >>> print(frame_count)
   >>> frame_number = 4976
-  >>> camhd.write_frame(filename, frame_number)
+  >>> camhd.write_frame(filename, frame_number, moov_atom)
+
+Note: Obtaining the moov_atom first and passing it to any function is optional, but
+it can greatly speed up subsequent calls to these functions. When multiple frames
+are to be obtained from the same file, getting the moov_atom first is recommended.
 
 License
 -------
