@@ -40,12 +40,14 @@ are to be obtained from the same file, getting the moov_atom first is recommende
 
 Get information about the repository::
 
->>> (total_size, file_count) = camhd.get_stats()
->>> print(total_size)
->>> print(file_count)
->>> file_list = camhd.get_file_list()
->>> for filename in file_list:
-...   print filename
+(total_size, file_count) = camhd.get_stats()
+print(total_size)
+print(file_count)
+file_list = camhd.get_file_list()
+for filename in file_list:
+  print filename
+
+
 
 *Note: Getting information about the repository can take a while, depending on
 server response times, because every index file must be downloaded*
