@@ -24,7 +24,7 @@ Installation
 Usage
 -------------
 
-Write a frame to a single-frame AVI file:
+Write a frame to a single-frame AVI file::
 
 .. code-block:: python
 
