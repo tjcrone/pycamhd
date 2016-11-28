@@ -52,7 +52,7 @@ def get_atom_sizes(filename):
 def get_moov_atom(filename):
   (ftyp_size, mdat_size, moov_size) = get_atom_sizes(filename)
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
-  #print "getting moov_atom" # print this for testing
+  #print("getting moov_atom")# print this for testing
   return get_bytes(filename, byte_range)
 
 # get frame count
@@ -161,9 +161,12 @@ def get_frame_data(filename, frame_number, moov_atom=False):
   return frame_data
 
 # write frame to file
-def write_frame(filename, frame_number, file_type='AVI'):
+def write_frame(filename, frame_number, moov_atom=False, file_type='AVI'):
   if file_type=='AVI':
-    frame_data = get_frame_data(filename, frame_number)
+    if moov_atom:
+      frame_data = get_frame_data(filename, frame_number, moov_atom)
+    else:
+      frame_data = get_frame_data(filename, frame_number)
     avi_file = get_avi_file(frame_data)
     outputfile = ('%s_%06.0f.avi' % (filename.split('/')[-1].split('.')[0], frame_number))
     f = open(outputfile, 'w')
@@ -228,6 +231,13 @@ def main():
 
   # test avi writer
   #frame_number = int(sys.argv[1])
+  #moov_atom = get_moov_atom(filename)
+  #frame_count = get_frame_count(filename, moov_atom)
+  #print(frame_count)
+  #frame_number = 4976
+  #write_frame(filename, frame_number, moov_atom)
+
+
   #write_frame(filename, frame_number)
 
   #(total_size, file_count) = get_stats()
