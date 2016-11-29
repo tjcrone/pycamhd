@@ -19,7 +19,7 @@ Installation
 ::
 
   $ hg clone https://bitbucket.org/tjcrone/camhd
-  $ pip install camhd/dist/camhd-0.3.tar.gz
+  $ pip install camhd/dist/camhd-0.4.tar.gz
 
 Basic Usage
 -----------
