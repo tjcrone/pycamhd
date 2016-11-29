@@ -34,6 +34,9 @@ Basic Usage
   >>> frame_number = 4976
   >>> camhd.write_frame(filename, frame_number, moov_atom)
 
+The resulting AVI file can be converted to a TIFF, PNG, YUV, or other image or movie
+format using ffmpeg. YUV conversions are lossless.
+
 *Note: Obtaining the moov_atom first and passing it to any function is optional, but
 it will greatly speed up calls to most functions. When multiple frames are to be
 obtained from the same file, getting the moov_atom first is recommended.*
