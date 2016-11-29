@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='camhd',
-      version='0.4dev',
+      version='0.4',
       description='Module for interacting with OOI CamHD video data',
       long_description='README.rst',
       url='https://bitbucket.org/tjcrone/camhd',
