@@ -6,8 +6,8 @@ CamHD seafloor camera system stored in the raw data archive. It can be used to
 obtain information about these remote files or retrieve individual frames
 without downloading entire video files. The code here is currently under heavy
 development, so the module is changing fast and often. We are considering moving
-the code to a class-paradigm, so a lot may change in the coming months, so
-please take that into consideration when developing code based on this module.
+the code to a class-paradigm, so a lot may change in the coming months. Please
+take this into consideration when developing code based on this module.
 
 We are actively recruiting anyone interested in the CamHD data to participate in
 the development of this code. Join up and contribute if you have time. Pull
@@ -16,15 +16,15 @@ requests greatly appreciated!
 Installation
 ------------
 
-.. code-block:: bash
+::
 
   $ hg clone https://bitbucket.org/tjcrone/camhd
   $ pip install camhd/dist/camhd-0.3.tar.gz
 
-Usage
------
+Basic Usage
+-----------
 
-Write a frame to a single-frame AVI file::
+**Write a frame to a single-frame AVI file**::
 
   >>> import camhd
   >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
@@ -35,12 +35,12 @@ Write a frame to a single-frame AVI file::
   >>> camhd.write_frame(filename, frame_number, moov_atom)
 
 *Note: Obtaining the moov_atom first and passing it to any function is optional, but
-it can greatly speed up subsequent calls to these functions. When multiple frames
-are to be obtained from the same file, getting the moov_atom first is recommended.*
+it will greatly speed up calls to most functions. When multiple frames are to be
+obtained from the same file, getting the moov_atom first is recommended.*
 
 **Get information about the repository**::
 
-  >>> (total_size, file_count) = camhd.get_stats() \
+  >>> (total_size, file_count) = camhd.get_stats()
   >>> print(total_size)
   >>> print(file_count)
   >>> file_list = camhd.get_file_list()
@@ -49,12 +49,6 @@ are to be obtained from the same file, getting the moov_atom first is recommende
 
 *Note: Getting information about the repository can take a while, depending on
 server response times, because every index file must be downloaded*
-
-
-
-
-*Note: These lower level 
-
 
 License
 -------
