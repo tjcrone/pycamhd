@@ -40,15 +40,15 @@ obtained from the same file, getting the moov_atom first is recommended.*
 
 **Get information about the repository**::
 
-  >>> (total_size, file_count) = camhd.get_stats()
-  >>> print(total_size)
+  >>> (file_count, total_size) = camhd.get_stats()
   >>> print(file_count)
+  >>> print(total_size)
   >>> file_list = camhd.get_file_list()
   >>> for filename in file_list:
   ...   print filename
 
-*Note: Getting information about the repository can take a while, depending on
-server response times, because every index file must be downloaded*
+*Note: Getting information about the repository can take several minutes, depending
+on server response times, because every index file must be downloaded*
 
 License
 -------
