@@ -43,7 +43,7 @@ frames are key frames.
 it will greatly speed up calls to most functions. When multiple frames are to be
 obtained from the same file, getting the moov_atom first is recommended.*
 
-**Get information about the repository**::
+**Get information about the remote archive**::
 
   >>> (file_count, total_size) = camhd.get_stats()
   >>> print(file_count)
