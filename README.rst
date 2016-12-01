@@ -55,6 +55,8 @@ obtained from the same file, getting the moov_atom first is recommended.*
 *Note: Getting information about the repository can take several minutes, depending
 on server response times, because every index file must be downloaded*
 
+.. note:: This is a admonition of type `note`.
+
 Function Reference
 ------------------
 
