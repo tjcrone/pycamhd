@@ -32,14 +32,9 @@ paragraph text
 
 .. = - ~ ` : ' " ^ _ * + # < >
 
-
-
-
-
-.. CAMHD
-.. =====
-
-
+#####
+CAMHD
+#####
 
 This repository contains a Python module for interacting with data from the OOI
 CamHD seafloor camera system stored in the raw data archive. It can be used to
@@ -53,16 +48,18 @@ We are actively recruiting anyone interested in the CamHD data to participate in
 the development of this code. Join up and contribute if you have time. Pull
 requests greatly appreciated!
 
+************
 Installation
-------------
+************
 
 ::
 
   $ hg clone https://bitbucket.org/tjcrone/camhd
   $ pip install camhd/dist/camhd-0.4.tar.gz
 
+***********
 Basic Usage
------------
+***********
 
 **Write a frame to a single-frame AVI file**::
 
@@ -95,19 +92,14 @@ obtained from the same file, getting the moov_atom first is recommended.*
 *Note: Getting information about the repository can take several minutes, depending
 on server response times, because every index file must be downloaded*
 
-.. note:: This is a admonition of type `note`.
-
+******************
 Function Reference
-------------------
-
-**Archive Stats:**
-
+******************
 
 Archive Stats
-`````````````
+=============
 
-... camhd.get_stats()
-
+camhd.get_stats()
   Return the total number of MOV files and the total size of the MOV files
   (in TB) in the data archive. Returns an integer and a float.
 
@@ -115,7 +107,8 @@ camhd.get_file_list()
   Return a list of all MOV files in the data archive as fully-qualified URLs.
   Returns a list of strings.
 
-**Individual File Information:**
+Individual File Information
+===========================
 
 camhd.get_atom_sizes(filename)
   Return the sizes of the three top-level atoms in a remote file. Returns
@@ -140,7 +133,8 @@ camhd.get_frame_offsets(filename[, moov_atom])
   Return the offsets of all frames in a remote file. Returns a list of
   integers.
 
-**Retrieve File Components:**
+Retrieve File Components
+========================
 
 camhd.get_moov_atom(filename)
   Retrieve the moov atom from a remote file. Returns a string containing raw
@@ -155,7 +149,8 @@ camhd.get_avi_file(frame_data)
   be a string containing raw packed binary data as returned by
   get_frame_data(). Returns a string containing raw packed binary data.
 
-**Write Output File:**
+Write Output File
+=================
 
 camhd.write_frame(filename, frame_number[, moov_atom])
   Writes a single-frame AVI file. The resulting AVI file can be converted to a
@@ -164,7 +159,8 @@ camhd.write_frame(filename, frame_number[, moov_atom])
   format using a video stream copy. All CamHD ProRes encoded video frames are
   key frames.
 
-**Low-level Functions:**
+Low-level Functions
+===================
 
 camhd.get_bytes(filename, byte_range)
   Retrieve a subset of bytes from a remote file. filename should be a fully
@@ -177,17 +173,20 @@ camhd.get_integer(filename, byte_range)
   byte_range should be a two-element list specifying a 4-byte or 8-byte
   range.
 
-**Misc:**
+Misc
+====
 
 camhd.version()
   Return the current version number of the module.
 
+*******
 License
--------
+*******
 
 MIT License Copyright (c) 2016 Timothy Crone
 
+******
 Author
-------
+******
 
 Timothy Crone (tjcrone@gmail.com)
