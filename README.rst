@@ -2,22 +2,33 @@
 Part
 ####
 
+part text 
+
 *******
 Chapter
 *******
 
+chapter text
+
 Section
 =======
+
+section text
 
 Subsection
 ----------
 
-Subsubsection
-~~~~~~~~~~~~~
+subsection text
 
+Subsubsection
+^^^^^^^^^^^^^
+
+subsubsection text
 
 Paragraph
 '''''''''
+
+paragraph text
 
 .. = - ~ ` : ' " ^ _ * + # < >
 
