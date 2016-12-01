@@ -60,10 +60,11 @@ Function Reference
 
 **Archive Stats:**
 
- camhd.get_stats()
 
+Archive Stats
+`````````````
 
-
+... camhd.get_stats()
 
   Return the total number of MOV files and the total size of the MOV files
   (in TB) in the data archive. Returns an integer and a float.
