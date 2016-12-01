@@ -58,9 +58,10 @@ on server response times, because every index file must be downloaded*
 Function Reference
 ------------------
 
-*Get Archive Stats*
+Get Archive Stats
+-----------------
 
-*camhd.get_stats()*
+camhd.get_stats()
   Return the total number of MOV files and the total size of the MOV files
   (in TB) in the data archive. Returns an integer and a float.
 
@@ -68,7 +69,8 @@ camhd.get_file_list()
   Return a list of all MOV files in the data archive as fully-qualified URLs.
   Returns a list of strings.
 
-**Get File Information**
+Get File Information
+--------------------
 
 camhd.get_atom_sizes(filename)
 
