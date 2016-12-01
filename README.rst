@@ -58,15 +58,7 @@ on server response times, because every index file must be downloaded*
 Function Reference
 ------------------
 
-:mod:`persistent` --- Persistent
-================================
-
-.. automodule:: persistent
-   :members:
-
-
-Get Archive Stats
------------------
+**Archive Stats:**
 
 camhd.get_stats()
   Return the total number of MOV files and the total size of the MOV files
@@ -76,13 +68,11 @@ camhd.get_file_list()
   Return a list of all MOV files in the data archive as fully-qualified URLs.
   Returns a list of strings.
 
-Get File Information
---------------------
+**Individual File Information:**
 
 camhd.get_atom_sizes(filename)
-
-Return the sizes of the three top-level atoms in a remote file. Returns
-three integers.
+  Return the sizes of the three top-level atoms in a remote file. Returns
+  three integers.
 
 camhd.get_chunk_count(filename[, moov_atom])
   Return the number of video chunks in a remote file. moov_atom should be a
@@ -103,7 +93,7 @@ camhd.get_frame_offsets(filename[, moov_atom])
   Return the offsets of all frames in a remote file. Returns a list of
   integers.
 
-**Retrieve File Components**
+**Retrieve File Components:**
 
 camhd.get_moov_atom(filename)
   Retrieve the moov atom from a remote file. Returns a string containing raw
@@ -118,7 +108,7 @@ camhd.get_avi_file(frame_data)
   be a string containing raw packed binary data as returned by
   get_frame_data(). Returns a string containing raw packed binary data.
 
-**Write Output File**
+**Write Output File:**
 
 camhd.write_frame(filename, frame_number[, moov_atom])
   Writes a single-frame AVI file. The resulting AVI file can be converted to a
@@ -127,7 +117,7 @@ camhd.write_frame(filename, frame_number[, moov_atom])
   format using a video stream copy. All CamHD ProRes encoded video frames are
   key frames.
 
-**Low-level Functions**
+**Low-level Functions:**
 
 camhd.get_bytes(filename, byte_range)
   Retrieve a subset of bytes from a remote file. filename should be a fully
@@ -140,7 +130,7 @@ camhd.get_integer(filename, byte_range)
   byte_range should be a two-element list specifying a 4-byte or 8-byte
   range.
 
-**Misc**
+**Misc:**
 
 camhd.version()
   Return the current version number of the module.
