@@ -1,37 +1,3 @@
-####
-Part
-####
-
-part text 
-
-*******
-Chapter
-*******
-
-chapter text
-
-Section
-=======
-
-section text
-
-Subsection
-----------
-
-subsection text
-
-Subsubsection
-^^^^^^^^^^^^^
-
-subsubsection text
-
-Paragraph
-'''''''''
-
-paragraph text
-
-.. = - ~ ` : ' " ^ _ * + # < >
-
 #####
 CAMHD
 #####
