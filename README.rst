@@ -60,57 +60,58 @@ Function Reference
 
 **Get Archive Stats**
 
-camhd.**get_stats**()
+camhd.get_stats()
   Return the total number of MOV files and the total size of the MOV files
   (in TB) in the data archive. Returns an integer and a float.
 
-get_file_list()
+camhd.get_file_list()
   Return a list of all MOV files in the data archive as fully-qualified URLs.
   Returns a list of strings.
 
 **Get File Information**
 
-get_atom_sizes(filename)
-  Return the sizes of the three top-level atoms in a remote file. Returns
-  three integers.
+camhd.get_atom_sizes(filename)
 
-get_chunk_count(filename[, moov_atom])
+Return the sizes of the three top-level atoms in a remote file. Returns
+three integers.
+
+camhd.get_chunk_count(filename[, moov_atom])
   Return the number of video chunks in a remote file. moov_atom should be a
   string containing raw packed binary data as returned by get_moov_atom().
   Returns an integer.
 
-get_chunk_offsets(filename[, moov_atom])
+camhd.get_chunk_offsets(filename[, moov_atom])
   Return the offsets of all chunks in a remote file. Returns a list of
   integers.
 
-get_frame_count(filename[, moov_atom])
+camhd.get_frame_count(filename[, moov_atom])
   Return the number of frames in a remote file. Returns an integer.
 
-get_frame_sizes(filename[, moov_atom])
+camhd.get_frame_sizes(filename[, moov_atom])
   Return the sizes of all frames in a remote file. Returns a list of integers.
 
-get_frame_offsets(filename[, moov_atom])
+camhd.get_frame_offsets(filename[, moov_atom])
   Return the offsets of all frames in a remote file. Returns a list of
   integers.
 
 **Retrieve File Components**
 
-get_moov_atom(filename)
+camhd.get_moov_atom(filename)
   Retrieve the moov atom from a remote file. Returns a string containing raw
   packed binary data.
 
-get_frame_data(filename, frame_number[, moov_atom])
+camhd.get_frame_data(filename, frame_number[, moov_atom])
   Retrieve the raw ProRes encoded frame data from a frame in a remote file.
   Returns a string containing raw packed binary data.
 
-get_avi_file(frame_data)
+camhd.get_avi_file(frame_data)
   Adds an appropriately structured AVI header to frame_data. frame_data should
   be a string containing raw packed binary data as returned by
   get_frame_data(). Returns a string containing raw packed binary data.
 
 **Write Output File**
 
-write_frame(filename, frame_number[, moov_atom])
+camhd.write_frame(filename, frame_number[, moov_atom])
   Writes a single-frame AVI file. The resulting AVI file can be converted to a
   TIFF, PNG, YUV, or another image or movie format using ffmpeg. YUV
   conversions are lossless, as would be conversions to any valid container
@@ -119,20 +120,20 @@ write_frame(filename, frame_number[, moov_atom])
 
 **Low-level Functions**
 
-get_bytes(filename, byte_range)
+camhd.get_bytes(filename, byte_range)
   Retrieve a subset of bytes from a remote file. filename should be a fully
   qualified URL specifiying a remote CamHD Quicktime MOV file. byte_range
   should be a two-element list. Returns a string containing raw packed
   binary data.
 
-get_integer(filename, byte_range)
+camhd.get_integer(filename, byte_range)
   Return a 32-bit or 64-bit big-endian integer from a remote file.
   byte_range should be a two-element list specifying a 4-byte or 8-byte
   range.
 
 **Misc**
 
-version()
+camhd.version()
   Return the current version number of the module.
 
 License
