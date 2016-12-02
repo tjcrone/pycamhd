@@ -26,6 +26,11 @@ Installation
 [some-other-file](my-dir/some-other-file)
 [asdf](dist/camhd-0.4.tar.gz)
 
+
+https://bitbucket.org/tjcrone/pycamhd/src/default/dist/pycamhd-0.4.tar.gz
+
+
+
 .. __: anonymous-hyperlink-target-link-block
 
 .. __: dist/camhd-0.4.tar.gz
