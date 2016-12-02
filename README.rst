@@ -21,11 +21,12 @@ Installation
 ::
 
   $ hg clone https://bitbucket.org/tjcrone/pycamhd
-  $ pip install pycamhd/dist/pycamhd-0.4.tar.gz
+  $ pip install pycamhd/dist/pycamhd-0.5.tar.gz
 
-Or you can download pycamhd-0.4.tar.gz_ directly and pip install that.
+Or you can download pycamhd-0.5.tar.gz_ directly and pip install the downloaded
+file.
 
-.. _pycamhd-0.4.tar.gz: https://bitbucket.org/tjcrone/pycamhd/raw/default/dist/camhd-0.4.tar.gz
+.. _pycamhd-0.5.tar.gz: https://bitbucket.org/tjcrone/pycamhd/raw/default/dist/pycamhd-0.5.tar.gz
 
 ***********
 Basic Usage
