@@ -12,7 +12,7 @@ from datetime import date, timedelta
 
 # version function
 def version():
-  sys.stdout.write('camhd version 0.5dev\n')
+  sys.stdout.write('camhd version 0.5\n')
 
 # get arbitrary bytes from remote file
 # change this to use pycurl?
