@@ -27,7 +27,8 @@ Installation
 [asdf](dist/camhd-0.4.tar.gz)
 
 
-https://bitbucket.org/tjcrone/pycamhd/src/default/dist/pycamhd-0.4.tar.gz
+https://bitbucket.org/tjcrone/pycamhd/src/default/dist/camhd-0.4.tar.gz
+https://bitbucket.org/tjcrone/pycamhd/src/default/dist/pycamhd-0.5.tar.gz
 
 
 
