@@ -23,6 +23,9 @@ Installation
   $ hg clone https://bitbucket.org/tjcrone/camhd
   $ pip install camhd/dist/camhd-0.4.tar.gz
 
+[some-other-file](my-dir/some-other-file)
+[asdf](dist/camhd-0.4.tar.gz)
+
 ***********
 Basic Usage
 ***********
