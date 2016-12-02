@@ -23,13 +23,12 @@ Installation
   $ hg clone https://bitbucket.org/tjcrone/pycamhd
   $ pip install pycamhd/dist/pycamhd-0.4.tar.gz
 
-[some-other-file](my-dir/some-other-file)
-[asdf](dist/camhd-0.4.tar.gz)
+
+https://bitbucket.org/tjcrone/pycamhd/raw/default/dist/camhd-0.4.tar.gz
 
 
-https://bitbucket.org/tjcrone/pycamhd/src/default/dist/camhd-0.4.tar.gz
-https://bitbucket.org/tjcrone/pycamhd/src/default/dist/pycamhd-0.5.tar.gz
 
+https://bitbucket.org/tjcrone/pycamhd/raw/default/dist/pycamhd-0.5.tar.gz
 
 
 .. __: anonymous-hyperlink-target-link-block
