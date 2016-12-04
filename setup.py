@@ -1,5 +1,12 @@
 from setuptools import setup
-import re
+import io, re, os
+
+def read(*names, **kwargs):
+    with io.open(
+        os.path.join(os.path.dirname(__file__), *names),
+        encoding=kwargs.get("encoding", "utf8")
+    ) as fp:
+        return fp.read()
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
@@ -9,7 +16,7 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
-version = find_version('serial', '__init__.py')
+version = find_version('camhd', '__init__.py')
 
 setup(name='pycamhd',
       version=version,
