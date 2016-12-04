@@ -10,10 +10,6 @@
 import subprocess, struct, sys, requests
 from datetime import date, timedelta
 
-# version function
-def version():
-  sys.stdout.write('camhd version 0.6dev\n')
-
 # get arbitrary bytes from remote file
 # change this to use pycurl?
 def get_bytes(filename, byte_range):
@@ -52,7 +48,7 @@ def get_atom_sizes(filename):
 def get_moov_atom(filename):
   (ftyp_size, mdat_size, moov_size) = get_atom_sizes(filename)
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
-  #print("getting moov_atom")# print this for testing
+  #print("getting moov_atom") # print this for testing
   return get_bytes(filename, byte_range)
 
 # get frame count
