@@ -148,8 +148,8 @@ camhd.get_integer(filename, byte_range)
 Misc
 ====
 
-camhd.version()
-  Return the current version number of the module.
+camhd.__version__
+  Print the current version number of the module.
 
 *******
 License
