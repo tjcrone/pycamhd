@@ -2,17 +2,17 @@
 PyCamHD
 #######
 
-This repository contains a Python module for interacting with data from the OOI
-CamHD seafloor camera system stored in the raw data archive. It can be used to
-obtain information about these remote files or retrieve individual frames
-without downloading entire video files. The code here is currently under heavy
-development, so the module is changing fast and often. We are considering moving
-the code to a class-paradigm, so a lot may change in the coming months. Please
-take this into consideration when developing code based on this module.
+This repository contains a Python module for interacting with data from the OOI CamHD
+seafloor camera system stored in the raw data archive. It can be used to obtain
+information about remote CamHD files or retrieve individual frames from these files
+without downloading them entirely. The code here is currently under heavy development,
+so the module is changing fast and often. We are considering moving the code to a
+class-paradigm, so a lot may change in the coming months. Pleasei take this into
+consideration when developing code based on this module.
 
-We are actively recruiting anyone interested in the CamHD data to participate in
-the development of this code. Join up and contribute if you have time. Pull
-requests greatly appreciated!
+We are actively recruiting anyone interested in the CamHD data to participate in the
+development of this code. Join up and contribute if you have time. Pull requests
+greatly appreciated!
 
 ************
 Installation
@@ -48,8 +48,9 @@ any valid container format using a video stream copy. All CamHD ProRes encoded v
 frames are key frames.
 
 *Note: Obtaining the moov_atom first and passing it to any function is optional, but
-it will greatly speed up calls to most functions. When multiple frames are to be
-obtained from the same file, getting the moov_atom first is recommended.*
+doing so will greatly speed up repeated calls to most functions for the same file.
+When multiple frames are to be obtained from the same file, getting the moov_atom
+first is recommended.*
 
 **Get information about the remote archive**::
 
