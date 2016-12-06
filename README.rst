@@ -7,7 +7,7 @@ seafloor camera system stored in the raw data archive. It can be used to obtain
 information about remote CamHD files or retrieve individual frames from these files
 without downloading them entirely. The code here is currently under heavy development,
 so the module is changing fast and often. We are considering moving the code to a
-class-paradigm, so a lot may change in the coming months. Pleasei take this into
+class-paradigm, so a lot may change in the coming months. Please take this into
 consideration when developing code based on this module.
 
 We are actively recruiting anyone interested in the CamHD data to participate in the
