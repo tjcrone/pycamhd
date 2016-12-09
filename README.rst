@@ -42,7 +42,7 @@ Basic Usage
   >>> moov_atom = camhd.get_moov_atom(filename)
   >>> frame_count = camhd.get_frame_count(filename, moov_atom)
   >>> print(frame_count)
-  >>> frame_number = 4976
+  >>> frame_number = 4976 # random choice
   >>> camhd.write_frame(filename, frame_number, moov_atom)
 
 The resulting AVI file can be converted to a TIFF, PNG, YUV, or another image or
