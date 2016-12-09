@@ -27,7 +27,9 @@ Or you can download pycamhd-0.5.tar.gz_ directly, unzip the file and pip install
 
 ::
 
-  $ pip install /pycamhd-0.5
+  $ tar xzvf pycamhd-0.5.tar.gz
+  $ cd pycamhd-0.5
+  $ pip install .
 
 .. _pycamhd-0.5.tar.gz: https://bitbucket.org/tjcrone/pycamhd/raw/default/dist/pycamhd-0.5.tar.gz
 
