@@ -3,7 +3,7 @@ PyCamHD
 #######
 
 This repository contains a Python module for interacting with data from the OOI CamHD
-seafloor camera system stored in the raw data archive. It can be used to obtain
+seafloor camera system stored in the `raw data archive`_. It can be used to obtain
 information about remote CamHD files or retrieve individual frames from these files
 without downloading them entirely. The code here is currently under heavy development,
 so the module is changing fast and often. We are considering moving the code to a
@@ -13,6 +13,8 @@ consideration when developing code based on this module.
 We are actively recruiting anyone interested in the CamHD data to participate in the
 development of this code. Join up and contribute if you have time. Pull requests
 greatly appreciated!
+
+.. _raw data archive: https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/
 
 ************
 Installation
