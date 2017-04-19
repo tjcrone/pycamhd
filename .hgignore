@@ -1,9 +1,0 @@
-syntax: glob
-*.pyc
-camhd.egg-info/*
-pycamhd.egg-info/*
-dist/camhd*
-.DS_Store
-NOTES
-*.avi
-*.swp

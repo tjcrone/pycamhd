@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from camhd import *
+from pycamhd import *
 
 __version__ = '0.6.0.dev1'
 

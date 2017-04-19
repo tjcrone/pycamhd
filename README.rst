@@ -41,13 +41,13 @@ Basic Usage
 
 **Write a frame to a single-frame AVI file**::
 
-  >>> import camhd
+  >>> import pycamhd
   >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
-  >>> moov_atom = camhd.get_moov_atom(filename)
-  >>> frame_count = camhd.get_frame_count(filename, moov_atom)
+  >>> moov_atom = pycamhd.get_moov_atom(filename)
+  >>> frame_count = pycamhd.get_frame_count(filename, moov_atom)
   >>> print(frame_count)
   >>> frame_number = 4976 # random choice
-  >>> camhd.write_frame(filename, frame_number, moov_atom)
+  >>> pycamhd.write_frame(filename, frame_number, moov_atom)
 
 The resulting AVI file can be converted to a TIFF, PNG, YUV, or another image or
 movie format using ffmpeg. YUV conversions are lossless, as would be conversions to
@@ -61,10 +61,10 @@ first is recommended.*
 
 **Get information about the remote archive**::
 
-  >>> (file_count, total_size) = camhd.get_stats()
+  >>> (file_count, total_size) = pycamhd.get_stats()
   >>> print(file_count)
   >>> print(total_size)
-  >>> file_list = camhd.get_file_list()
+  >>> file_list = pycamhd.get_file_list()
   >>> for filename in file_list:
   ...   print filename
 
@@ -78,52 +78,52 @@ Function Reference
 Archive Stats
 =============
 
-camhd.get_stats()
+pycamhd.get_stats()
   Return the total number of MOV files and the total size of the MOV files
   (in TB) in the data archive. Returns an integer and a float.
 
-camhd.get_file_list()
+pycamhd.get_file_list()
   Return a list of all MOV files in the data archive as fully-qualified URLs.
   Returns a list of strings.
 
 Individual File Information
 ===========================
 
-camhd.get_atom_sizes(filename)
+pycamhd.get_atom_sizes(filename)
   Return the sizes of the three top-level atoms in a remote file. Returns
   three integers.
 
-camhd.get_chunk_count(filename[, moov_atom])
+pycamhd.get_chunk_count(filename[, moov_atom])
   Return the number of video chunks in a remote file. moov_atom should be a
   string containing raw packed binary data as returned by get_moov_atom().
   Returns an integer.
 
-camhd.get_chunk_offsets(filename[, moov_atom])
+pycamhd.get_chunk_offsets(filename[, moov_atom])
   Return the offsets of all chunks in a remote file. Returns a list of
   integers.
 
-camhd.get_frame_count(filename[, moov_atom])
+pycamhd.get_frame_count(filename[, moov_atom])
   Return the number of frames in a remote file. Returns an integer.
 
-camhd.get_frame_sizes(filename[, moov_atom])
+pycamhd.get_frame_sizes(filename[, moov_atom])
   Return the sizes of all frames in a remote file. Returns a list of integers.
 
-camhd.get_frame_offsets(filename[, moov_atom])
+pycamhd.get_frame_offsets(filename[, moov_atom])
   Return the offsets of all frames in a remote file. Returns a list of
   integers.
 
 Retrieve File Components
 ========================
 
-camhd.get_moov_atom(filename)
+pycamhd.get_moov_atom(filename)
   Retrieve the moov atom from a remote file. Returns a string containing raw
   packed binary data.
 
-camhd.get_frame_data(filename, frame_number[, moov_atom])
+pycamhd.get_frame_data(filename, frame_number[, moov_atom])
   Retrieve the raw ProRes encoded frame data from a frame in a remote file.
   Returns a string containing raw packed binary data.
 
-camhd.get_avi_file(frame_data)
+pycamhd.get_avi_file(frame_data)
   Adds an appropriately structured AVI header to frame_data. frame_data should
   be a string containing raw packed binary data as returned by
   get_frame_data(). Returns a string containing raw packed binary data.
@@ -131,7 +131,7 @@ camhd.get_avi_file(frame_data)
 Write Output File
 =================
 
-camhd.write_frame(filename, frame_number[, moov_atom])
+pycamhd.write_frame(filename, frame_number[, moov_atom])
   Writes a single-frame AVI file. The resulting AVI file can be converted to a
   TIFF, PNG, YUV, or another image or movie format using ffmpeg. YUV
   conversions are lossless, as would be conversions to any valid container
@@ -141,13 +141,13 @@ camhd.write_frame(filename, frame_number[, moov_atom])
 Low-level Functions
 ===================
 
-camhd.get_bytes(filename, byte_range)
+pycamhd.get_bytes(filename, byte_range)
   Retrieve a subset of bytes from a remote file. filename should be a fully
   qualified URL specifiying a remote CamHD Quicktime MOV file. byte_range
   should be a two-element list. Returns a string containing raw packed
   binary data.
 
-camhd.get_integer(filename, byte_range)
+pycamhd.get_integer(filename, byte_range)
   Return a 32-bit or 64-bit big-endian integer from a remote file.
   byte_range should be a two-element list specifying a 4-byte or 8-byte
   range.
@@ -155,7 +155,7 @@ camhd.get_integer(filename, byte_range)
 Misc
 ====
 
-camhd.__version__
+pycamhd.__version__
   Print the current version number of the module.
 
 *******
