@@ -2,7 +2,8 @@
 # This is a Python module for interacting with data from the OOI CamHD
 # seafloor camera system stored in the raw data archive. It can be used to
 # obtain information about these files or obtain individual frames without
-# downloading entire video files.
+# downloading entire video files. The module can also work with video files
+# stored on the local filesystem.
 #
 # Timothy Crone (tjcrone@gmail.com)
 
@@ -10,16 +11,20 @@
 import subprocess, struct, sys, requests
 from datetime import date, timedelta
 
-# get arbitrary bytes from remote file
-# change this to use pycurl?
+# get arbitrary bytes from remote or local file
 def get_bytes(filename, byte_range):
-  cmd = ('curl --header "Range: bytes=%i-%i" -k -s ' % 
-    (byte_range[0], byte_range[1])) + filename
-  p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-  file_bytes = p.communicate()[0]
+  if "https://" in filename:
+    cmd = ('curl --header "Range: bytes=%i-%i" -k -s ' %
+      (byte_range[0], byte_range[1])) + filename
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    file_bytes = p.communicate()[0]
+  else:
+    with open(filename, 'rb') as f:
+      f.seek(byte_range[0], 0)
+      file_bytes = f.read(byte_range[1] - byte_range[0] + 1)
   return file_bytes
 
-# get big-endian 32-bit or 64-bit integer from remote file
+# get big-endian 32-bit or 64-bit integer from file
 def get_integer(filename, byte_range):
   file_bytes = get_bytes(filename, byte_range)
   if len(file_bytes) == 4:
@@ -224,6 +229,8 @@ def main():
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/07/09/CAMHDA301-20150709T121400Z.mov'
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/11/25/CAMHDA301-20151125T150000Z.mov'
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/20/CAMHDA301-20161120T180000Z.camhd_prores_001744.mov' # new file
+  #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/01/27/CAMHDA301-20160127T180000Z.mov'
+  #filename = '/Users/tjc/research/ooi/misc/CAMHDA301-20161113T000000Z.mov'
 
   # test avi writer
   #frame_number = int(sys.argv[1])
@@ -232,7 +239,6 @@ def main():
   #print(frame_count)
   #frame_number = 4976
   #write_frame(filename, frame_number, moov_atom)
-
 
   #write_frame(filename, frame_number)
 
@@ -260,7 +266,8 @@ def main():
   #for i in frame_sizes:
   #  sys.stdout.write('%i\n' % i)
 
-  #byte_range = [0, 9600]
+  # test byte range
+  #byte_range = [3901, 3916]
   #file_bytes = get_bytes(filename, byte_range)
   #sys.stdout.write(file_bytes)
 
