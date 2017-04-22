@@ -153,11 +153,11 @@ def get_frame_data(filename, frame_number, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   frame_sizes = get_frame_sizes(filename, moov_atom)
-  if frame_number > len(frame_sizes):
+  if frame_number > len(frame_sizes) - 1:
     raise ValueError('frame_number exceeds number of frames in file')
   frame_offsets = get_frame_offsets(filename, moov_atom)
-  byte_range = [frame_offsets[frame_number - 1], frame_offsets[frame_number - 1] +
-    frame_sizes[frame_number - 1] - 1]
+  byte_range = [frame_offsets[frame_number], frame_offsets[frame_number] +
+    frame_sizes[frame_number] - 1]
   frame_data = get_bytes(filename, byte_range)
   return frame_data
 
