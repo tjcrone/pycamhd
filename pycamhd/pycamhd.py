@@ -8,7 +8,7 @@
 # Timothy Crone (tjcrone@gmail.com)
 
 # imports
-import subprocess, struct, sys, requests
+import subprocess, struct, sys, requests, av
 from datetime import date, timedelta
 
 # get arbitrary bytes from remote or local file
@@ -145,6 +145,27 @@ def get_avi_file(frame_data):
     'LIST' + struct.pack('I', len(frame_data) + 12) + 'movi' + \
     '\x30\x30\x64\x63' + struct.pack('I', len(frame_data)) + frame_data
   return avi_file
+
+def get_frame(filename, frame_number, moov_atom=False):
+  # this returns an av.frame object
+  if "https://" in filename:
+    if moov_atom:
+      frame_data = get_frame_data(filename, frame_number, moov_atom)
+    else:
+      frame_data = get_frame_data(filename, frame_number)
+    packet = av.packet.Packet(len(frame_data))
+    packet.update_buffer(frame_data)
+    decoder = av.Decoder("prores")
+    decoder.width = 1920
+    decoder.height = 1080
+    frame = next(decoder.decode(packet))
+  else:
+    container = av.open(filename)
+    pts = int(frame_number*33366)
+    container.seek(pts, mode='frame', backward=False)
+    packet = next(container.demux())
+    frame = packet.decode_one()
+  return frame
 
 # get frame data
 def get_frame_data(filename, frame_number, moov_atom=False):
