@@ -146,7 +146,7 @@ def get_avi_file(frame_data):
     '\x30\x30\x64\x63' + struct.pack('I', len(frame_data)) + frame_data
   return avi_file
 
-def get_frame(filename, frame_number, moov_atom=False):
+def get_frame(filename, frame_number, pix_fmt='gray16le', moov_atom=False):
   # this returns an av.frame object
   if "https://" in filename:
     if moov_atom:
@@ -165,7 +165,7 @@ def get_frame(filename, frame_number, moov_atom=False):
     container.seek(pts, mode='frame', backward=False)
     packet = next(container.demux())
     frame = packet.decode_one()
-  return frame
+  return frame.reformat(format=pix_fmt)
 
 # get frame data
 def get_frame_data(filename, frame_number, moov_atom=False):
