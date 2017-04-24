@@ -17,15 +17,27 @@ greatly appreciated!
 .. _raw data archive: https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/
 
 ************
+Requirements
+************
+
+This module currently only works with Python 2.7. It also requires `Requests`_ and
+`this`_ fork of PyAV.
+
+.. _Requests: https://pypi.python.org/pypi/requests
+.. _this: https://github.com/markreidvfx/PyAV
+
+************
 Installation
 ************
 
 ::
 
-  $ hg clone https://bitbucket.org/tjcrone/pycamhd
-  $ pip install pycamhd/dist/pycamhd-0.5.tar.gz
+  $ git clone https://github.com/tjcrone/pycamhd.git
+  $ cd pycamhd
+  $ pip install .
 
-Or you can download pycamhd-0.5.tar.gz_ directly, unzip the file and pip install at the top level directory containing setup.py.
+<!--
+Or you can download pycamhd-0.6.tar.gz_ directly, unzip the file and pip install at the top level directory containing setup.py.
 
 ::
 
@@ -34,6 +46,8 @@ Or you can download pycamhd-0.5.tar.gz_ directly, unzip the file and pip install
   $ pip install .
 
 .. _pycamhd-0.5.tar.gz: https://bitbucket.org/tjcrone/pycamhd/raw/default/dist/pycamhd-0.5.tar.gz
+
+-->
 
 ***********
 Basic Usage
