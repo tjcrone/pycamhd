@@ -8,8 +8,9 @@
 # Timothy Crone (tjcrone@gmail.com)
 
 # imports
-import subprocess, struct, sys, requests
+import subprocess, struct, sys, requests, av
 from datetime import date, timedelta
+import numpy as np
 
 # get arbitrary bytes from remote or local file
 def get_bytes(filename, byte_range):
@@ -145,6 +146,40 @@ def get_avi_file(frame_data):
     'LIST' + struct.pack('I', len(frame_data) + 12) + 'movi' + \
     '\x30\x30\x64\x63' + struct.pack('I', len(frame_data)) + frame_data
   return avi_file
+
+def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
+  if "https://" in filename:
+    if moov_atom:
+      frame_data = get_frame_data(filename, frame_number, moov_atom)
+    else:
+      frame_data = get_frame_data(filename, frame_number)
+    packet = av.packet.Packet(len(frame_data))
+    packet.update_buffer(frame_data)
+    decoder = av.Decoder("prores")
+    decoder.width = 1920
+    decoder.height = 1080
+    frame = next(decoder.decode(packet)).reformat(format=pix_fmt)
+  else:
+    container = av.open(filename)
+    pts = int(frame_number*33366)
+    container.seek(pts, mode='frame', backward=False)
+    packet = next(container.demux())
+    frame = packet.decode_one().reformat(format=pix_fmt)
+
+  # define output datatype
+  dt = np.uint8
+  if frame.format.name in ('rgb48le', 'bgr48le', 'gray16le'):
+    dt = np.dtype('uint16').newbyteorder('<')
+  elif frame.format.name in ('rgb48be', 'bgr48be', 'gray16be'):
+    dt = np.dtype('uint16').newbyteorder('>')
+
+  # convert to nd array
+  if frame.format.name in ('rgb24', 'bgr24', 'rgb48le', 'rgb48be', 'bgr48le', 'bgr48be'):
+    return np.frombuffer(frame.planes[0], dt).reshape(frame.height, frame.width, -1)
+  if frame.format.name in ('gray', 'gray16le', 'gray16be'):
+    return np.frombuffer(frame.planes[0], dt).reshape(frame.height, frame.width)
+  else:
+    raise ValueError("%s format not supported" % frame.format.name)
 
 # get frame data
 def get_frame_data(filename, frame_number, moov_atom=False):
