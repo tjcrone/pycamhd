@@ -5,14 +5,8 @@ PyCamHD
 This repository contains a Python module for interacting with data from the OOI CamHD
 seafloor camera system stored in the `raw data archive`_. It can be used to obtain
 information about remote CamHD files or retrieve individual frames from these files
-without downloading them entirely. The code here is currently under heavy development,
-so the module is changing fast and often. We are considering moving the code to a
-class-paradigm, so a lot may change in the coming months. Please take this into
-consideration when developing code based on this module.
-
-We are actively recruiting anyone interested in the CamHD data to participate in the
-development of this code. Join up and contribute if you have time. Pull requests
-greatly appreciated!
+without downloading them entirely. This code can also work with files on the local
+filesystem. The code here is currently under development, so the API may change.
 
 .. _raw data archive: https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/
 
@@ -20,9 +14,9 @@ greatly appreciated!
 Requirements
 ************
 
-This module currently only works with Python 2.7. It also requires `Requests`_ and
-`this`_ fork of PyAV.
+This module currently only works with Python 2.7. It also requires `Numpy`_, `Requests`_, and `this`_ fork of PyAV.
 
+.. _Numpy: http://www.numpy.org/
 .. _Requests: https://pypi.python.org/pypi/requests
 .. _this: https://github.com/markreidvfx/PyAV
 
@@ -40,20 +34,16 @@ Installation
 Basic Usage
 ***********
 
-**Write a frame to a single-frame AVI file**::
+**Get a single frame from a remote CamHD file as an np.ndarray**::
 
-  >>> import pycamhd
+  >>> import pycamhd as camhd
+  >>> import numpy as np
   >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
   >>> moov_atom = pycamhd.get_moov_atom(filename)
   >>> frame_count = pycamhd.get_frame_count(filename, moov_atom)
   >>> print(frame_count)
-  >>> frame_number = 4976 # random choice
-  >>> pycamhd.write_frame(filename, frame_number, moov_atom)
-
-The resulting AVI file can be converted to a TIFF, PNG, YUV, or another image or
-movie format using ffmpeg. YUV conversions are lossless, as would be conversions to
-any valid container format using a video stream copy. All CamHD ProRes encoded video
-frames are key frames.
+  >>> frame_number = 7200
+  >>> frame = camhd.get_frame(filename, frame_number, 'rgb24')
 
 *Note: Obtaining the moov_atom first and passing it to any function is optional, but
 doing so will greatly speed up repeated calls to most functions for the same file.
@@ -67,7 +57,7 @@ first is recommended.*
   >>> print(total_size)
   >>> file_list = pycamhd.get_file_list()
   >>> for filename in file_list:
-  ...   print filename
+  ...   print(filename)
 
 *Note: Getting information about the repository can take several minutes, depending
 on server response times, because every index file must be downloaded*
@@ -76,8 +66,18 @@ on server response times, because every index file must be downloaded*
 Function Reference
 ******************
 
-Archive Stats
-=============
+Retrieve a Single Frame from File
+=================================
+
+pycamhd.get_frame(filename, frame_number[, pix_fmt [, moov_atom]])
+  Retrieve a single frame from a remote or local file. pix_fmt should be one of the
+  following: 'rgb24', 'bgr24', 'rgb48le', 'rgb48be', 'bgr48le', 'bgr48be', 'gray',
+  'gray16le', and 'gray16be'. The default pix_fmt is 'rgb24'. moov_atom should be a
+  string containing raw packed binary data as returned by get_moov_atom(). Returns an
+  np.ndarray with a shape and datatype appropriate to the frame size and pix_fmt.
+
+Get Archive Stats
+=================
 
 pycamhd.get_stats()
   Return the total number of MOV files and the total size of the MOV files
@@ -87,8 +87,8 @@ pycamhd.get_file_list()
   Return a list of all MOV files in the data archive as fully-qualified URLs.
   Returns a list of strings.
 
-Individual File Information
-===========================
+Get File Information
+====================
 
 pycamhd.get_atom_sizes(filename)
   Return the sizes of the three top-level atoms in a remote file. Returns
@@ -113,8 +113,8 @@ pycamhd.get_frame_offsets(filename[, moov_atom])
   Return the offsets of all frames in a remote file. Returns a list of
   integers.
 
-Retrieve File Components
-========================
+Get File Components
+===================
 
 pycamhd.get_moov_atom(filename)
   Retrieve the moov atom from a remote file. Returns a string containing raw
@@ -123,21 +123,6 @@ pycamhd.get_moov_atom(filename)
 pycamhd.get_frame_data(filename, frame_number[, moov_atom])
   Retrieve the raw ProRes encoded frame data from a frame in a remote file.
   Returns a string containing raw packed binary data.
-
-pycamhd.get_avi_file(frame_data)
-  Adds an appropriately structured AVI header to frame_data. frame_data should
-  be a string containing raw packed binary data as returned by
-  get_frame_data(). Returns a string containing raw packed binary data.
-
-Write Output File
-=================
-
-pycamhd.write_frame(filename, frame_number[, moov_atom])
-  Writes a single-frame AVI file. The resulting AVI file can be converted to a
-  TIFF, PNG, YUV, or another image or movie format using ffmpeg. YUV
-  conversions are lossless, as would be conversions to any valid container
-  format using a video stream copy. All CamHD ProRes encoded video frames are
-  key frames.
 
 Low-level Functions
 ===================
