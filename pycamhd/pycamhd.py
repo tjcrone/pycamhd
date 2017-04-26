@@ -176,7 +176,7 @@ def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
   # convert to nd array
   if frame.format.name in ('rgb24', 'bgr24', 'rgb48le', 'rgb48be', 'bgr48le', 'bgr48be'):
     return np.frombuffer(frame.planes[0], dt).reshape(frame.height, frame.width, -1)
-  if frame.format.name in ('gray', 'gray16le', 'gray16be'):
+  elif frame.format.name in ('gray', 'gray16le', 'gray16be'):
     return np.frombuffer(frame.planes[0], dt).reshape(frame.height, frame.width)
   else:
     raise ValueError("%s format not supported" % frame.format.name)
