@@ -220,15 +220,22 @@ def get_file_list():
   start_date = date(2015, 7, 9)
   end_date = date.today()
   file_list = []
+  file_sizes = []
   for single_date in _get_date_range(start_date, end_date + timedelta(days=2)):
     indexfile = ("https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301" +
       single_date.strftime("/%Y/%m/%d/"))
     res = requests.get(indexfile, verify=False)
     for line in res.text.encode('utf-8').strip().splitlines():
-      if 'mov' in line and 'md5' not in line::
-        file_list.append(("https://rawdata.oceanobservatories.org/files/RS03ASHS/" +
+      if 'mov' in line and 'md5' not in line:
+        filename = (("https://rawdata.oceanobservatories.org/files/RS03ASHS/" +
         "PN03B/06-CAMHDA301" + single_date.strftime("/%Y/%m/%d/")) + line.split('\"')[5])
-  return file_list
+        file_list.append(filename)
+        file_headers = requests.head(filename)
+        try:
+          file_sizes.append(int(file_headers.headers.get('Content-Length')))
+        except:
+          file_sizes.append(0)
+  return file_list, file_sizes
 
 # get raw data archive stats
 def get_stats():
@@ -242,7 +249,7 @@ def get_stats():
       single_date.strftime("/%Y/%m/%d/"))
     res = requests.get(indexfile, verify=False)
     for line in res.text.encode('utf-8').strip().splitlines():
-      if 'mov' in line and 'md5' not in line::
+      if 'mov' in line and 'md5' not in line:
         filesize = line.strip().rsplit(' ', 1)[-1]
         if 'M' in filesize:
           mb = filesize.split('M')[0]
