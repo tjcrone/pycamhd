@@ -225,7 +225,7 @@ def get_file_list():
       single_date.strftime("/%Y/%m/%d/"))
     res = requests.get(indexfile, verify=False)
     for line in res.text.encode('utf-8').strip().splitlines():
-      if 'mov' in line:
+      if 'mov' in line and 'md5' not in line::
         file_list.append(("https://rawdata.oceanobservatories.org/files/RS03ASHS/" +
         "PN03B/06-CAMHDA301" + single_date.strftime("/%Y/%m/%d/")) + line.split('\"')[5])
   return file_list
@@ -242,7 +242,7 @@ def get_stats():
       single_date.strftime("/%Y/%m/%d/"))
     res = requests.get(indexfile, verify=False)
     for line in res.text.encode('utf-8').strip().splitlines():
-      if 'mov' in line:
+      if 'mov' in line and 'md5' not in line::
         filesize = line.strip().rsplit(' ', 1)[-1]
         if 'M' in filesize:
           mb = filesize.split('M')[0]
