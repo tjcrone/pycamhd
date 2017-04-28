@@ -56,8 +56,8 @@ first is recommended.*
   >>> print(file_count)
   >>> print(total_size)
   >>> file_list = pycamhd.get_file_list()
-  >>> for filename in file_list:
-  ...   print(filename)
+  >>> for key, value in file_list.iteritems():
+  ...   print(key, value)
 
 *Note: Getting information about the repository can take several minutes, depending
 on server response times, because every index file must be downloaded*

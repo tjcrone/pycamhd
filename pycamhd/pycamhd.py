@@ -220,15 +220,27 @@ def get_file_list():
   start_date = date(2015, 7, 9)
   end_date = date.today()
   file_list = []
+  file_sizes = []
   for single_date in _get_date_range(start_date, end_date + timedelta(days=2)):
     indexfile = ("https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301" +
       single_date.strftime("/%Y/%m/%d/"))
     res = requests.get(indexfile, verify=False)
     for line in res.text.encode('utf-8').strip().splitlines():
-      if 'mov' in line:
+      if 'mov' in line and 'md5' not in line:
         file_list.append(("https://rawdata.oceanobservatories.org/files/RS03ASHS/" +
         "PN03B/06-CAMHDA301" + single_date.strftime("/%Y/%m/%d/")) + line.split('\"')[5])
-  return file_list
+        filesize = line.strip().rsplit(' ', 1)[-1]
+        if 'M' in filesize:
+          mb = filesize.split('M')[0]
+          mb = float(mb)/1024
+          file_sizes.append((str(mb) + " GB"))
+        elif 'G' in filesize:
+          gb = filesize.split('G')[0]
+          gb = float(gb)
+          file_sizes.append((str(gb) + " GB"))
+  file_list_zip = dict(zip(file_list, file_sizes))
+
+  return file_list_zip
 
 # get raw data archive stats
 def get_stats():
