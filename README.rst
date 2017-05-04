@@ -36,14 +36,14 @@ Basic Usage
 
 **Get a single frame from a remote CamHD file as an np.ndarray**::
 
-  >>> import pycamhd as camhd
+  >>> import pycamhd
   >>> import numpy as np
   >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
   >>> moov_atom = pycamhd.get_moov_atom(filename)
   >>> frame_count = pycamhd.get_frame_count(filename, moov_atom)
   >>> print(frame_count)
   >>> frame_number = 7200
-  >>> frame = camhd.get_frame(filename, frame_number, 'rgb24')
+  >>> frame = pycamhd.get_frame(filename, frame_number, 'rgb24')
 
 *Note: Obtaining the moov_atom first and passing it to any function is optional, but
 doing so will greatly speed up repeated calls to most functions for the same file.
