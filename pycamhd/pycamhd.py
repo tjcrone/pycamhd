@@ -148,11 +148,15 @@ def get_avi_file(frame_data):
   return avi_file
 
 def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
+  # test frame_number
+  if not moov_atom:
+    moov_atom = get_moov_atom(filename)
+  frame_count = get_frame_count(filename, moov_atom)
+  if frame_number >= frame_count:
+    raise ValueError("frame count exceeded")
+  # get frame
   if "https://" in filename:
-    if moov_atom:
-      frame_data = get_frame_data(filename, frame_number, moov_atom)
-    else:
-      frame_data = get_frame_data(filename, frame_number)
+    frame_data = get_frame_data(filename, frame_number, moov_atom)
     packet = av.packet.Packet(len(frame_data))
     packet.update_buffer(frame_data)
     decoder = av.Decoder("prores")
