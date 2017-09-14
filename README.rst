@@ -6,7 +6,7 @@ This repository contains a Python module for interacting with data from the OOI 
 seafloor camera system stored in the `raw data archive`_. It can be used to obtain
 information about remote CamHD files or retrieve individual frames from these files
 without downloading them entirely. This code can also work with files on the local
-filesystem. The code here is currently under development, so the API may change.
+filesystem.
 
 .. _raw data archive: https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/
 
@@ -14,11 +14,11 @@ filesystem. The code here is currently under development, so the API may change.
 Requirements
 ************
 
-This module currently only works with Python 2.7. It also requires `Numpy`_, `Requests`_, and `this`_ fork of PyAV.
+This module currently only works with Python 3.x. It also requires `Numpy`_, `Requests`_, and `PyAV`_.
 
 .. _Numpy: http://www.numpy.org/
 .. _Requests: https://pypi.python.org/pypi/requests
-.. _this: https://github.com/markreidvfx/PyAV
+.. _PyAV: https://github.com/mikeboers/PyAV
 
 ************
 Installation
@@ -36,14 +36,14 @@ Basic Usage
 
 **Get a single frame from a remote CamHD file as an np.ndarray**::
 
-  >>> import pycamhd
+  >>> import pycamhd as camhd
   >>> import numpy as np
   >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
-  >>> moov_atom = pycamhd.get_moov_atom(filename)
-  >>> frame_count = pycamhd.get_frame_count(filename, moov_atom)
+  >>> moov_atom = camhd.get_moov_atom(filename)
+  >>> frame_count = camhd.get_frame_count(filename, moov_atom)
   >>> print(frame_count)
   >>> frame_number = 7200
-  >>> frame = pycamhd.get_frame(filename, frame_number, 'rgb24')
+  >>> frame = camhd.get_frame(filename, frame_number, 'rgb24')
 
 *Note: Obtaining the moov_atom first and passing it to any function is optional, but
 doing so will greatly speed up repeated calls to most functions for the same file.
@@ -52,10 +52,10 @@ first is recommended.*
 
 **Get information about the remote archive**::
 
-  >>> (file_count, total_size) = pycamhd.get_stats()
+  >>> (file_count, total_size) = camhd.get_stats()
   >>> print(file_count)
   >>> print(total_size)
-  >>> file_list = pycamhd.get_file_list()
+  >>> file_list = camhd.get_file_list()
   >>> for filename in file_list:
   ...   print(filename)
 
