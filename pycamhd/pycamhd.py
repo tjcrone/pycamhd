@@ -61,7 +61,7 @@ def get_moov_atom(filename):
 def get_frame_count(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
-  stsz_pos = moov_atom.find('stsz') # searching for the ascii code is NOT IDEAL
+  stsz_pos = moov_atom.find(b'stsz') # searching for the ascii code is NOT IDEAL
   return struct.unpack('>I', moov_atom[stsz_pos+12:stsz_pos+16])[0]
 
 # get frame sizes
@@ -69,7 +69,7 @@ def get_frame_sizes(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   frame_count = get_frame_count(filename, moov_atom)
-  stsz_pos = moov_atom.find('stsz') # searching for the ascii code is NOT IDEAL
+  stsz_pos = moov_atom.find(b'stsz') # searching for the ascii code is NOT IDEAL
   frame_sizes = []
   for i in range(stsz_pos+16, stsz_pos+16+4*frame_count, 4):
     frame_sizes.append(struct.unpack('>I', moov_atom[i:i+4])[0])
@@ -79,7 +79,7 @@ def get_frame_sizes(filename, moov_atom=False):
 def get_chunk_count(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
-  co64_pos = moov_atom.find('co64') # searching for the ascii code is NOT IDEAL
+  co64_pos = moov_atom.find(b'co64') # searching for the ascii code is NOT IDEAL
   return struct.unpack('>I', moov_atom[co64_pos+8:co64_pos+12])[0]
 
 # get chunk offsets
@@ -87,7 +87,7 @@ def get_chunk_offsets(filename, moov_atom=False):
   if not moov_atom:
     moov_atom = get_moov_atom(filename)
   chunk_count = get_chunk_count(filename, moov_atom)
-  co64_pos = moov_atom.find('co64') # searching for the ascii code is NOT IDEAL
+  co64_pos = moov_atom.find(b'co64') # searching for the ascii code is NOT IDEAL
   chunk_offsets = []
   for i in range(co64_pos+12, co64_pos+12+8*chunk_count, 8):
     chunk_offsets.append(struct.unpack('>Q', moov_atom[i:i+8])[0])
@@ -157,16 +157,15 @@ def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
   # get frame
   if "https://" in filename:
     frame_data = get_frame_data(filename, frame_number, moov_atom)
-    packet = av.packet.Packet(len(frame_data))
-    packet.update_buffer(frame_data)
-    decoder = av.Decoder("prores")
+    packet = av.packet.Packet(frame_data)
+    decoder = av.codec.CodecContext.create('prores', 'r')
     decoder.width = 1920
     decoder.height = 1080
-    frame = next(decoder.decode(packet)).reformat(format=pix_fmt)
+    frame = decoder.decode(packet)[0].reformat(format=pix_fmt)
   else:
     container = av.open(filename)
     pts = int(frame_number*33366)
-    container.seek(pts, mode='frame', backward=False)
+    container.seek(pts, whence='frame', backward=False)
     packet = next(container.demux())
     frame = packet.decode_one().reformat(format=pix_fmt)
 
