@@ -57,6 +57,12 @@ def get_moov_atom(filename):
   #print("getting moov_atom") # print this for testing
   return get_bytes(filename, byte_range)
 
+# get file creation timestamp (returns seconds from Unix epoch)
+def get_timestamp(filename, moov_atom=False):
+  if not moov_atom:
+    moov_atom = get_moov_atom(filename)
+  return struct.unpack('>I', moov_atom[20:24])[0]-2082844800 # adjust for difference between Unix and QuickTime epoch
+
 # get frame count
 def get_frame_count(filename, moov_atom=False):
   if not moov_atom:
@@ -300,8 +306,8 @@ def main():
   
   # get moov atom
   #moov_atom = get_moov_atom(filename)
-  #print len(moov_atom)
-  #sys.stdout.write(moov_atom)
+  #print(len(moov_atom))
+  #sys.stdout.buffer.write(moov_atom)
 
   #frame_count = get_frame_count(filename, moov_atom)
   #print frame_count
