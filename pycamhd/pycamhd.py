@@ -235,6 +235,7 @@ def get_file_list():
       single_date.strftime("/%Y/%m/%d/"))
     res = requests.get(indexfile, verify=False)
     for line in res.text.encode('utf-8').strip().splitlines():
+      line = line.decode('utf-8')
       if 'mov' in line and 'md5' not in line:
         filename = (("https://rawdata.oceanobservatories.org/files/RS03ASHS/" +
         "PN03B/06-CAMHDA301" + single_date.strftime("/%Y/%m/%d/")) + line.split('\"')[5])
