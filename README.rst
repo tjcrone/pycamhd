@@ -26,9 +26,7 @@ Installation
 
 ::
 
-  $ git clone https://github.com/tjcrone/pycamhd.git
-  $ cd pycamhd
-  $ pip install .
+  $ pip install git+https://github.com/tjcrone/pycamhd
 
 ***********
 Basic Usage
@@ -36,7 +34,7 @@ Basic Usage
 
 **Get a single frame from a remote CamHD file as an np.ndarray**::
 
-  >>> import pycamhd as camhd
+  >>> import pycamhd.pycamhd as camhd
   >>> import numpy as np
   >>> filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
   >>> moov_atom = camhd.get_moov_atom(filename)
