@@ -37,24 +37,32 @@ def get_integer(filename, byte_range):
 def get_atom_sizes(filename):
   byte_range = [0, 3]
   ftyp_size = get_integer(filename, byte_range)
-  # error if ftyp_size not 24
-  if ftyp_size != 24:
-    raise ValueError('unexpected size of first atom')
-  byte_range = [ftyp_size, ftyp_size + 3]
-  mdat_size = get_integer(filename, byte_range)
-  if mdat_size == 1:
-    byte_range = [ftyp_size + 8, ftyp_size + 15]
+  if ftyp_size == 24:
+    byte_range = [ftyp_size, ftyp_size + 3]
     mdat_size = get_integer(filename, byte_range)
-  byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
-  moov_size = get_integer(filename, byte_range)
-  return ftyp_size, mdat_size, moov_size
+    if mdat_size == 1:
+      byte_range = [ftyp_size + 8, ftyp_size + 15]
+      mdat_size = get_integer(filename, byte_range)
+    byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + 3]
+    moov_size = get_integer(filename, byte_range)
+    return ftyp_size, mdat_size, moov_size
+  elif ftyp_size == 1: # deal with missing ftyp atom
+    file_headers = requests.head(filename)
+    file_size = int(file_headers.headers.get('Content-Length'))
+    lastmb = get_bytes(filename, [file_size-1024*1024, file_size])
+    moov_pos = file_size-1024*1024+lastmb.find(b'moov')-4
+    moov_size = get_integer(filename, [moov_pos, moov_pos+3])
+    mdat_size = file_size-moov_size
+    ftyp_size = 0
+    return ftyp_size, mdat_size, moov_size
+  else:
+    raise ValueError('unexpected size of first atom')
 
 # get the moov atom
 # moov atom is returned as a string containing packed binary data
 def get_moov_atom(filename):
   (ftyp_size, mdat_size, moov_size) = get_atom_sizes(filename)
   byte_range = [ftyp_size + mdat_size, ftyp_size + mdat_size + moov_size]
-  #print("getting moov_atom") # print this for testing
   return get_bytes(filename, byte_range)
 
 # get file creation timestamp (returns seconds from Unix epoch)
@@ -277,7 +285,7 @@ def get_stats():
 
 # main function to run when called directly, used mostly for testing
 def main():
-  pass
+  #pass
   # file to test
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/07/09/CAMHDA301-20150709T121400Z.mov'
@@ -285,6 +293,16 @@ def main():
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/20/CAMHDA301-20161120T180000Z.camhd_prores_001744.mov' # new file
   #filename = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/01/27/CAMHDA301-20160127T180000Z.mov'
   #filename = '/Users/tjc/research/ooi/misc/CAMHDA301-20161113T000000Z.mov'
+
+  goodmoov = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2016/11/13/CAMHDA301-20161113T000000Z.mov'
+  badmoov = 'https://rawdata.oceanobservatories.org/files/RS03ASHS/PN03B/06-CAMHDA301/2015/11/18/CAMHDA301-20151118T000020Z.mov'
+  filename = badmoov
+  filename = goodmoov
+  moov_atom = get_moov_atom(filename)
+  sys.stdout.buffer.write(moov_atom)
+  #print(struct.unpack(moov_atom))
+  frame_count = get_frame_count(filename, moov_atom)
+  #print(frame_count)
 
   # test avi writer
   #frame_number = int(sys.argv[1])
