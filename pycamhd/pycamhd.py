@@ -153,28 +153,7 @@ def get_avi_file(frame_data):
     '\x30\x30\x64\x63' + struct.pack('I', len(frame_data)) + frame_data
   return avi_file
 
-def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
-  # test frame_number
-  if not moov_atom:
-    moov_atom = get_moov_atom(filename)
-  frame_count = get_frame_count(filename, moov_atom)
-  if frame_number >= frame_count:
-    raise ValueError("frame count exceeded")
-  # get frame
-  if "https://" in filename:
-    frame_data = get_frame_data(filename, frame_number, moov_atom)
-    packet = av.packet.Packet(frame_data)
-    decoder = av.codec.CodecContext.create('prores', 'r')
-    decoder.width = 1920
-    decoder.height = 1080
-    frame = decoder.decode(packet)[0].reformat(format=pix_fmt)
-  else:
-    container = av.open(filename)
-    pts = int(frame_number*33366)
-    container.seek(pts, whence='frame', backward=False)
-    packet = next(container.demux())
-    frame = packet.decode_one().reformat(format=pix_fmt)
-
+def _convert_to_array(frame)
   # define output datatype
   dt = np.uint8
   if frame.format.name in ('rgb48le', 'bgr48le', 'gray16le'):
@@ -182,13 +161,36 @@ def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
   elif frame.format.name in ('rgb48be', 'bgr48be', 'gray16be'):
     dt = np.dtype('uint16').newbyteorder('>')
 
-  # convert to nd array
+  # convert to numpy array
   if frame.format.name in ('rgb24', 'bgr24', 'rgb48le', 'rgb48be', 'bgr48le', 'bgr48be'):
     return np.frombuffer(frame.planes[0], dt).reshape(frame.height, frame.width, -1)
   elif frame.format.name in ('gray', 'gray16le', 'gray16be'):
     return np.frombuffer(frame.planes[0], dt).reshape(frame.height, frame.width)
   else:
-    raise ValueError("%s format not supported" % frame.format.name)
+    raise ValueError("%s format not supported. use one of: 'rgb24', 'bgr24', 'rgb48le', 'rgb48be', 'bgr48le', 'bgr48be', 'gray', 'gray16le', or 'gray16be'." % frame.format.name)
+
+def decode_frame_data(frame_data, pix_fmt='rgb24'):
+  packet = av.packet.Packet(frame_data)
+  decoder = av.codec.CodecContext.create('prores', 'r')
+  decoder.width = 1920
+  decoder.height = 1080
+  frame = decoder.decode(packet)[0].reformat(format=pix_fmt)
+  return _convert_to_array(frame)
+
+def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
+  # get frame
+  if "https://" in filename:
+    frame_data = get_frame_data(filename, frame_number, moov_atom)
+    return decode_frame_data(frame_data, pix_fmt)
+  else:
+    # need to test frame number here.
+    # is this faster? maybe better to refactor so as to also use frame_data.
+    container = av.open(filename)
+    pts = int(frame_number*33366)
+    container.seek(pts, whence='frame', backward=False)
+    packet = next(container.demux())
+    frame = packet.decode_one().reformat(format=pix_fmt)
+    return _convert_to_array(frame)
 
 # get frame data
 def get_frame_data(filename, frame_number, moov_atom=False):
