@@ -18,12 +18,18 @@ def find_version(*file_paths):
 
 version = find_version('pycamhd', '__init__.py')
 
-setup(name='pycamhd',
-      version=version,
-      description='Module for interacting with OOI CamHD video data',
-      long_description='README.rst',
-      url='https://github.com/tjcrone/pycamhd',
-      author='Timothy Crone',
-      author_email='tjcrone@gmail.com',
-      license='MIT',
-      packages=['pycamhd'])
+setup(
+    name='pycamhd',
+    version=version,
+    description='Module for interacting with OOI CamHD video data',
+    long_description='README.rst',
+    install_requires=[
+        'numpy',
+        'av>=0.4.0',
+        'requests',
+    ],
+    url='https://github.com/tjcrone/pycamhd',
+    author='Timothy Crone',
+    author_email='tjcrone@gmail.com',
+    license='MIT',
+    packages=['pycamhd'])
