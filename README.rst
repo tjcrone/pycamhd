@@ -14,7 +14,7 @@ filesystem.
 Requirements
 ************
 
-This module currently only works with Python 3.x. It also requires `Numpy`_, `Requests`_, and `PyAV`_.
+This module currently only works with Python 3.x. It also requires `Numpy`_, `Requests`_, and `PyAV`_>=0.4.0.
 
 .. _Numpy: http://www.numpy.org/
 .. _Requests: https://pypi.python.org/pypi/requests
@@ -26,13 +26,13 @@ Installation
 
 ::
 
-  $ pip install git+https://github.com/tjcrone/pycamhd
+  $ pip install pycamhd
 
 ***********
 Basic Usage
 ***********
 
-**Get a single frame from a remote CamHD file as an np.ndarray**::
+**Get a single frame from a remote CamHD file as a numpy array**::
 
   >>> import pycamhd as camhd
   >>> import numpy as np
@@ -71,35 +71,34 @@ pycamhd.get_frame(filename, frame_number[, pix_fmt [, moov_atom]])
   Retrieve a single frame from a remote or local file. pix_fmt should be one of the
   following: 'rgb24', 'bgr24', 'rgb48le', 'rgb48be', 'bgr48le', 'bgr48be', 'gray',
   'gray16le', and 'gray16be'. The default pix_fmt is 'rgb24'. moov_atom should be a
-  string containing raw packed binary data as returned by get_moov_atom(). Returns an
-  np.ndarray with a shape and datatype appropriate to the frame size and pix_fmt.
+  string containing raw packed binary data as returned by get_moov_atom(). Returns a
+  numpy array with a shape and datatype appropriate to the frame size and pix_fmt.
 
 Get Archive Stats
 =================
 
 pycamhd.get_stats()
-  Return the total number of MOV files and the total size of the MOV files
-  (in TB) in the data archive. Returns an integer and a float.
+  Return the total number of MOV files and the total size of the MOV files (in TB) in
+  the data archive. Returns an integer and a float.
 
 pycamhd.get_file_list()
-  Return a list of all MOV files in the data archive as fully-qualified URLs.
-  Returns a list of strings.
+  Return a list of all MOV files in the data archive as fully-qualified URLs. Returns
+  a list of strings.
 
 Get File Information
 ====================
 
 pycamhd.get_atom_sizes(filename)
-  Return the sizes of the three top-level atoms in a remote file. Returns
-  three integers.
+  Return the sizes of the three top-level atoms in a remote file. Returns three
+  integers.
 
 pycamhd.get_chunk_count(filename[, moov_atom])
-  Return the number of video chunks in a remote file. moov_atom should be a
-  string containing raw packed binary data as returned by get_moov_atom().
-  Returns an integer.
+  Return the number of video chunks in a remote file. moov_atom should be a string
+  containing raw packed binary data as returned by get_moov_atom(). Returns an
+  integer.
 
 pycamhd.get_chunk_offsets(filename[, moov_atom])
-  Return the offsets of all chunks in a remote file. Returns a list of
-  integers.
+  Return the offsets of all chunks in a remote file. Returns a list of integers.
 
 pycamhd.get_frame_count(filename[, moov_atom])
   Return the number of frames in a remote file. Returns an integer.
@@ -108,33 +107,39 @@ pycamhd.get_frame_sizes(filename[, moov_atom])
   Return the sizes of all frames in a remote file. Returns a list of integers.
 
 pycamhd.get_frame_offsets(filename[, moov_atom])
-  Return the offsets of all frames in a remote file. Returns a list of
-  integers.
+  Return the offsets of all frames in a remote file. Returns a list of integers.
 
 Get File Components
 ===================
 
 pycamhd.get_moov_atom(filename)
-  Retrieve the moov atom from a remote file. Returns a string containing raw
-  packed binary data.
+  Retrieve the moov atom from a remote file. Returns a string containing raw packed
+  binary data.
 
 pycamhd.get_frame_data(filename, frame_number[, moov_atom])
-  Retrieve the raw ProRes encoded frame data from a frame in a remote file.
-  Returns a string containing raw packed binary data.
+  Retrieve the raw ProRes encoded frame data from a frame in a remote file. Returns a
+  string containing raw packed binary data.
+
+Decode Frame Data
+=================
+
+pycamhd.decode_frame_data(frame_data, pix_fmt)
+  Decode ProRes frame data into image. pix_fmt should be one of the following:
+  'rgb24', 'bgr24', 'rgb48le', 'rgb48be', 'bgr48le', 'bgr48be', 'gray',
+  'gray16le', and 'gray16be'. The default pix_fmt is 'rgb24'. Returns a numpy
+  array with a shape and datatype appropriate to the frame size and pix_fmt.
 
 Low-level Functions
 ===================
 
 pycamhd.get_bytes(filename, byte_range)
   Retrieve a subset of bytes from a remote file. filename should be a fully
-  qualified URL specifiying a remote CamHD Quicktime MOV file. byte_range
-  should be a two-element list. Returns a string containing raw packed
-  binary data.
+  qualified URL specifiying a remote CamHD Quicktime MOV file. byte_range should
+  be a two-element list. Returns a string containing raw packed binary data.
 
 pycamhd.get_integer(filename, byte_range)
-  Return a 32-bit or 64-bit big-endian integer from a remote file.
-  byte_range should be a two-element list specifying a 4-byte or 8-byte
-  range.
+  Return a 32-bit or 64-bit big-endian integer from a remote file.  byte_range
+  should be a two-element list specifying a 4-byte or 8-byte range.
 
 Misc
 ====
@@ -149,7 +154,8 @@ License
 MIT License Copyright (c) 2016 Timothy Crone
 
 ******
-Author
+Contributors
 ******
 
 Timothy Crone (tjcrone@gmail.com)
+Friedrich Knuth (friedrich.knuth@gmail.com)
