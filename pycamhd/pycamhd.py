@@ -12,6 +12,12 @@ import subprocess, struct, sys, requests, av
 from datetime import date, timedelta
 import numpy as np
 
+def _get_token(response):
+  for key, value in response.cookies.items():
+    if key.startswith('download_warning'):
+      return value
+  return None
+
 # get arbitrary bytes from remote or local file
 def get_bytes(filename, byte_range):
   if "https://" in filename:
@@ -19,6 +25,17 @@ def get_bytes(filename, byte_range):
       (byte_range[0], byte_range[1])) + filename
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     file_bytes = p.communicate()[0]
+  elif "gdid://" in filename:
+    id = filename[7:]
+    URL = "https://docs.google.com/uc?export=download"
+    session = requests.Session()
+    headers = {"Range": "bytes=%i-%i" % (byte_range[0], byte_range[1])}
+    response = session.get(URL, params = { 'id' : id }, stream = True, headers = headers)
+    token = _get_token(response)
+    if token:
+      params = { 'id' : id, 'confirm' : token }
+      response = session.get(URL, params = params, stream = True, headers = headers)
+    file_bytes = response.content
   else:
     with open(filename, 'rb') as f:
       f.seek(byte_range[0], 0)
@@ -179,7 +196,7 @@ def decode_frame_data(frame_data, pix_fmt='rgb24'):
 
 def get_frame(filename, frame_number, pix_fmt='rgb24', moov_atom=False):
   # get frame
-  if "https://" in filename:
+  if "https://" in filename or "gdid://" in filename:
     frame_data = get_frame_data(filename, frame_number, moov_atom)
     return decode_frame_data(frame_data, pix_fmt)
   else:
