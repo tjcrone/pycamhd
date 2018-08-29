@@ -243,10 +243,8 @@ def _get_date_range(start_date, end_date):
     yield start_date + timedelta(i)
 
 # get file list
-def get_file_list():
+def get_file_list(start_date=date(2015, 7, 9), end_date=date.today()):
   requests.packages.urllib3.disable_warnings()
-  start_date = date(2015, 7, 9)
-  end_date = date.today()
   file_list = []
   file_sizes = []
   for single_date in _get_date_range(start_date, end_date + timedelta(days=2)):
