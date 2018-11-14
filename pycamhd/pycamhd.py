@@ -25,10 +25,11 @@ def _get_token(response):
 # get arbitrary bytes from remote or local file
 def get_bytes(filename, byte_range):
   if "https://" in filename:
-    cmd = ('curl --header "Range: bytes=%i-%i" -k -s ' %
+    cmd = ('curl --no-buffer --header "Range: bytes=%i-%i" -k -s ' %
       (byte_range[0], byte_range[1])) + filename
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    file_bytes = p.communicate()[0]
+    file_bytes = p.communicate(timeout=120)[0]
+
   elif "gdid://" in filename:
     id = filename[7:]
     URL = "https://docs.google.com/uc?export=download"
