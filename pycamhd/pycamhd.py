@@ -8,7 +8,11 @@
 # Timothy Crone (tjcrone@gmail.com)
 
 # imports
-import subprocess, struct, sys, requests, av
+import subprocess
+import struct
+import sys
+import requests
+import av
 from datetime import date, timedelta
 import numpy as np
 
