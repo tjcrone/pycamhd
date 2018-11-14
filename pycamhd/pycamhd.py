@@ -28,7 +28,11 @@ def get_bytes(filename, byte_range):
     cmd = ('curl --no-buffer --header "Range: bytes=%i-%i" -k -s ' %
       (byte_range[0], byte_range[1])) + filename
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    file_bytes = p.communicate(timeout=120)[0]
+    try:
+      file_bytes = p.communicate(timeout=120)[0]
+    except:
+      p.kill()
+      raise TimeoutError('curl timed out during get_bytes')
 
   elif "gdid://" in filename:
     id = filename[7:]
